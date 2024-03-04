@@ -1,9 +1,19 @@
 package assignments.assignment1;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 public class OrderGenerator {
     private static final Scanner input = new Scanner(System.in);
+    private static String divider = "--------------------------------------------------"; // Divider
+    // Code 39 character set
+    private static char[] code39 = new char[]{
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', // Numeric 0-9
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', // A - M
+        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', // N - Z
+    };
+
 
     // Menu
     public static void showMenu(){
@@ -23,13 +33,14 @@ public class OrderGenerator {
     
     // Menu for repetition
     public static void repMenu(){
-        System.out.println(">>=======================================<<");
+        System.out.println(divider);
         System.out.println("Pilih menu:");
         System.out.println("1. Generate Order ID");
         System.out.println("2. Generate Bill");
         System.out.println("3. Keluar");
     }
-
+    
+    // Find Index untuk array
     public static int findIndexArray(char[] array, char chr){
         int index = -1;
 
@@ -42,16 +53,32 @@ public class OrderGenerator {
 
         return index;
     }
+    
+    // Check sum generator 
+    public static String checkSum(String orderID){
+        String output = "";
 
-    // Generaye Order ID
+        // 2 Karakter checkSum
+        int checkSumOdd = 0;
+        int checkSumEven = 0;
+        for (int i = 0; i < orderID.length(); i++){
+            char c = orderID.charAt(i);
+            if(i % 2 == 0){
+                checkSumOdd += findIndexArray(code39, c);
+            } else {
+                checkSumEven += findIndexArray(code39, c);
+            }
+        }
+
+        // Menambahkan hasil translasi Code 39 ke Order ID
+        output += code39[checkSumOdd % 36];
+        output += code39[checkSumEven % 36];
+
+        return output;
+    }
+
+    // -- Generaye Order ID -- //
     public static String generateOrderID(String namaRestoran, String tanggalOrder, String noTelepon) {
-        // Code 39 character set
-        char[] code39 = new char[]{
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', // Numeric 0-9
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', // A - M
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', // N - Z
-        };
-
         String orderID = "";
 
         // Generate 4 huruf pertama dari namaRestoran
@@ -83,26 +110,12 @@ public class OrderGenerator {
             orderID += sumTelepon;
         }
 
-        // 2 Karakter checkSum
-        int checkSumOdd = 0;
-        int checkSumEven = 0;
-        for (int i = 0; i < orderID.length(); i++){
-            char c = orderID.charAt(i);
-            if(i % 2 == 0){
-                checkSumOdd += findIndexArray(code39, c);
-            } else {
-                checkSumEven += findIndexArray(code39, c);
-            }
-        }
-
-        // Menambahkan hasil translasi Code 39 ke Order ID
-        orderID += code39[checkSumOdd % 36];
-        orderID += code39[checkSumEven % 36];
+        orderID += checkSum(orderID); // Menanmbahkan checksum
 
         return orderID;
     }
 
-    // Generate Bill
+    // -- Generate Bill -- //
     public static String generateBill(String orderID, String lokasi){
         // Kota dan Tarif, dihubungkan oleh index yang sama
         char[] kota = new char[]{'P', 'U', 'T', 'S', 'B'}; // Daftar Kota yang dapat dijangkau
@@ -120,10 +133,145 @@ public class OrderGenerator {
             "Biaya Ongkos Kirim: " + "Rp " + tarif[findIndexArray(kota, lokasi.toUpperCase().charAt(0))] + "\n"
         ); 
     }
-
+    
+    // -- Main Function -- //
     public static void main(String[] args) {
-        System.out.println("Main Funtion");
+        boolean running = true;
+        boolean firstTime = true;
+        
+        showMenu(); // Show Menu and Dekdepe Big Text
+        while (running) {
+            if (!firstTime) repMenu(); // Different menu
+            
+            firstTime = false;
+            System.out.println(divider);
+            System.err.print("Pilihan Menu: ");
+            int pilihan;
+            
+            // Input Validation: Not number, not 1 <= pilihan <= 3
+            try {
+                pilihan = input.nextInt();
+                input.nextLine();
+            } catch (Exception e) {
+                System.out.println("Input tidak valid, silahkan ulangi!\n");
+                input.nextLine();
+                continue;
+            }
+            
+            if (pilihan != 1 && pilihan != 2 && pilihan != 3){
+                System.out.println("Masukkan Nomor Pilihan yang tepat!\n");
+                continue;
+            } else if (pilihan == 3){
+                System.out.println("Terima kasih telah menggunakan DepeFood!");
+                running = false;
+            } else if (pilihan == 1){
+                String namaRestoran;
+                String tanggalOrder;
+                String noTelepon;
+                while (true){
+                    System.out.print("\nNama Restoran: ");
+                    namaRestoran = input.nextLine().replace(" ", "").toUpperCase();
+                    if (namaRestoran.length() < 4 || !checkAlphaNumeric(namaRestoran)){
+                        System.out.println("Nama restoran tidak valid!");
+                        continue;
+                    }
+                    System.out.print("Tanggal Pemesanan: ");
+                    tanggalOrder = input.nextLine();
+                    if (!checkDate(tanggalOrder)){
+                        System.out.println("Tanggal Pemesanan dalam format DD/MM/YYYY!");
+                        continue;
+                    }
+                    System.out.print("No. Telepon: ");
+                    noTelepon = input.nextLine();
+                    if (!checkPhone(noTelepon)){
+                        System.out.println("Harap masukkan nomor telepon dalam bentuk bilangan bulat positif.");
+                        continue;
+                    }
+
+                    // All test passed, generate ID nya
+                    System.out.println("Order ID " + generateOrderID(namaRestoran, tanggalOrder, noTelepon) + " diterima!");
+                    System.out.println();
+                    break;
+                }
+            } else if (pilihan == 2){
+                String orderID;
+                String lokasi;
+                while (true){
+                    System.out.print("\nOrder ID: ");
+                    orderID = input.nextLine();
+                    if (orderID.length() != 16 || !checkOrderID(orderID)){
+                        System.out.println("Silahkan masukkan Order ID yang valid!");
+                        continue;
+                    }
+                    System.out.print("Lokasi Pengiriman: ");
+                    lokasi = input.nextLine();
+                    if (
+                        // Panjang lokasi harus 1 karakter
+                        lokasi.length() != 1
+                        // Lokasi harus berupa huruf
+                        || !Character.isAlphabetic(lokasi.charAt(0)) 
+                        // Lokasi harus salah satu dari P, U, T, S, B
+                        || findIndexArray(new char[]{'P', 'U', 'T', 'S', 'B'}, lokasi.toUpperCase().charAt(0)) == -1){
+                        System.out.println("Harap masukkan lokasi pengiriman yang bisa dijangkau atau valid!");
+                        continue;
+                    }
+
+                    // All test passed, generate Bill nya
+                    System.out.println();
+                    System.out.println(generateBill(orderID, lokasi));
+                    break;
+                }
+            }
+        }
+    }
+    
+    // Helper Function untuk cek format tanggal
+    public static boolean checkDate(String date){
+        // Cek panjang tanggal (generic test, tidak memeriksa bulan dan tahun)
+        if (date.length() != 10){
+            return false;
+        }
+
+        DateFormat dateCheck = new SimpleDateFormat("dd/MM/yyyy"); // Format tanggal yang diharapkan
+        
+        // Tidak menerima tanggal yang tidak valid
+        dateCheck.setLenient(false);
+        
+        // Cek jika format tanggal sesuai
+        try {
+            dateCheck.parse(date);
+        } catch (Exception e) {
+            return false; // Jika tidak sesuai (gagal diubah menjadi sebuah tanggal), return false
+        }
+
+        return true;
     }
 
-    
+    // Helper Function untuk cek nomor telepon
+    public static boolean checkPhone(String phone){
+        // Cek setiap digit
+        for (int i = 0; i < phone.length(); i++){
+            char digit = phone.charAt(i);
+            if (!Character.isDigit(digit)) return false;
+        }
+
+        return true;
+    }
+
+    // Helper Function untuk cek jika inout bersifat alphanumeric
+    public static boolean checkAlphaNumeric(String str){
+        for (int i = 0; i < str.length(); i++) {
+            char chr = str.charAt(i);
+            if (!Character.isAlphabetic(chr) && !Character.isDigit(chr)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Helper function untuk check kevalidan ID
+    public static boolean checkOrderID(String orderID){
+        return checkSum(orderID.substring(0, orderID.length() - 2)).equals(orderID.substring(orderID.length() - 2));
+    }
 }
