@@ -159,28 +159,34 @@ public class OrderGenerator {
             }
             
             if (pilihan != 1 && pilihan != 2 && pilihan != 3){
+                // Invalid choice
                 System.out.println("Masukkan Nomor Pilihan yang tepat!\n");
                 continue;
             } else if (pilihan == 3){
+                // Keluar
                 System.out.println("Terima kasih telah menggunakan DepeFood!");
                 running = false;
             } else if (pilihan == 1){
+                // Generate Order ID
                 String namaRestoran;
                 String tanggalOrder;
                 String noTelepon;
                 while (true){
+                    // Ambil nama restoran & validasi
                     System.out.print("\nNama Restoran: ");
                     namaRestoran = input.nextLine().replace(" ", "").toUpperCase();
                     if (namaRestoran.length() < 4 || !checkAlphaNumeric(namaRestoran)){
                         System.out.println("Nama restoran tidak valid!");
                         continue;
                     }
+                    // Ambil tanggal pemesanan & validasi
                     System.out.print("Tanggal Pemesanan: ");
                     tanggalOrder = input.nextLine();
                     if (!checkDate(tanggalOrder)){
                         System.out.println("Tanggal Pemesanan dalam format DD/MM/YYYY!");
                         continue;
                     }
+                    // Ambil nomor telepon & validasi
                     System.out.print("No. Telepon: ");
                     noTelepon = input.nextLine();
                     if (!checkPhone(noTelepon)){
@@ -188,30 +194,34 @@ public class OrderGenerator {
                         continue;
                     }
 
-                    // All test passed, generate ID nya
+                    // All test passed, generate ID nya!
                     System.out.println("Order ID " + generateOrderID(namaRestoran, tanggalOrder, noTelepon) + " diterima!");
                     System.out.println();
                     break;
                 }
             } else if (pilihan == 2){
+                // Generate bill / tagihan
                 String orderID;
                 String lokasi;
                 while (true){
+                    // Ambil Order ID dan validasi
                     System.out.print("\nOrder ID: ");
-                    orderID = input.nextLine();
+                    orderID = input.nextLine().toUpperCase();
                     if (orderID.length() != 16 || !checkOrderID(orderID)){
                         System.out.println("Silahkan masukkan Order ID yang valid!");
                         continue;
                     }
+                    // Ambil lokasi (P, U, S, T, B) dan validasi
                     System.out.print("Lokasi Pengiriman: ");
-                    lokasi = input.nextLine();
+                    lokasi = input.nextLine().toUpperCase();
                     if (
                         // Panjang lokasi harus 1 karakter
                         lokasi.length() != 1
                         // Lokasi harus berupa huruf
                         || !Character.isAlphabetic(lokasi.charAt(0)) 
                         // Lokasi harus salah satu dari P, U, T, S, B
-                        || findIndexArray(new char[]{'P', 'U', 'T', 'S', 'B'}, lokasi.toUpperCase().charAt(0)) == -1){
+                        || findIndexArray(new char[]{'P', 'U', 'T', 'S', 'B'}, lokasi.charAt(0)) == -1
+                    ){
                         System.out.println("Harap masukkan lokasi pengiriman yang bisa dijangkau atau valid!");
                         continue;
                     }
