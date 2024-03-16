@@ -1,8 +1,7 @@
-package main.java.assignments.assignment2;
+package assignments.assignment2;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-// import assignments.assignment1.*;
 
 public class MainMenu {
     private static final Scanner input = new Scanner(System.in);
@@ -24,12 +23,17 @@ public class MainMenu {
                 System.out.print("Nomor Telepon: ");
                 String noTelp = input.nextLine();
 
-                // TODO: Validasi input login
+                User checkUser = getUser(nama, noTelp);
 
-                User userLoggedIn; // TODO: lengkapi
+                if(checkUser == null){
+                    System.out.println("Pengguna dengan data tersebut tidak ditemukan!");
+                    continue;
+                }
+
+                User userLoggedIn = checkUser;
                 boolean isLoggedIn = true;
 
-                if(userLoggedIn.role == "Customer"){
+                if(userLoggedIn.getRole() == "Customer"){
                     while (isLoggedIn){
                         menuCustomer();
                         int commandCust = input.nextInt();

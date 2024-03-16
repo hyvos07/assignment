@@ -1,10 +1,22 @@
-package main.java.assignments.assignment2;
+package assignments.assignment2;
+
+import java.util.ArrayList;
 
 public class Restaurant {
-     // TODO: tambahkan attributes yang diperlukan untuk class ini
+    // Attributes yang dimiliki sebuah Restaurant
+    private String nama;
+    private ArrayList<Menu> menu; // Menyimpan menu yang disediakan oleh restaurant ini
+
     public Restaurant(String nama){
-        // TODO: buat constructor untuk class ini
+        this.nama = nama;
     }
     
-    // TODO: tambahkan methods yang diperlukan untuk class ini
+    // Getter
+    public String getNama(){
+        return nama;
+    }
+
+    public ArrayList<Menu> getMenu(){
+        return menu;
+    }
 }
