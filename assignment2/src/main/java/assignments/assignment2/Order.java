@@ -1,21 +1,25 @@
 package assignments.assignment2;
 
-import java.util.ArrayList;
-import assignments.assignment1.OrderGenerator;
+import java.util.ArrayList; // XXX: Apakah parameter boleh diganti?
 
 
 public class Order {
     // Attributes yang dimiliki order dari sebuah user
     private String orderId;
     private String tanggalPemesanan;
-    private int biayaOngkosKirim;
+    private String biayaOngkosKirim;
     private Restaurant restaurant;
-    protected ArrayList<Menu> items;
+    protected Menu[] items;
     protected boolean orderFinished;
 
 
-    public Order(String orderId, String tanggal, int ongkir, Restaurant resto, Menu[] items){
-        // TODO: buat constructor untuk class ini
+    public Order(String orderId, String tanggal, String ongkir, Restaurant resto, Menu[] items){
+        this.orderId = orderId;
+        this.tanggalPemesanan = tanggal;
+        this.biayaOngkosKirim = ongkir;
+        this.restaurant = resto;
+        this.items = items;
+        this.orderFinished = false; // Initial Value = Order belum diselesaikan
     }
     
     // Getter
@@ -27,7 +31,7 @@ public class Order {
         return tanggalPemesanan;
     }
 
-    public int getBiayaOngkosKirim(){
+    public String getBiayaOngkosKirim(){
         return biayaOngkosKirim;
     }
 
