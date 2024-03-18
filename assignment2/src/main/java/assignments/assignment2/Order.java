@@ -2,7 +2,6 @@ package assignments.assignment2;
 
 import java.util.ArrayList; // XXX: Apakah parameter boleh diganti?
 
-
 public class Order {
     // Attributes yang dimiliki order dari sebuah user
     private String orderId;
@@ -37,5 +36,15 @@ public class Order {
 
     public Restaurant getRestaurant(){
         return restaurant;
+    }
+
+    // Method
+    public int calculateTotal(){
+        int total = 0;
+        for (int i = 0; i < items.length; i++){
+            total += items[i].getHarga();
+        }
+        total += Integer.parseInt(biayaOngkosKirim);
+        return (int) total;
     }
 }

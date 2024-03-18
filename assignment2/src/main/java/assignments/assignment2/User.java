@@ -10,7 +10,7 @@ public class User {
     private String lokasi;
     private String role;
 
-    protected ArrayList<Order> orderHistory; // Menyimpan order yang pernah dipesan oleh user
+    protected ArrayList<Order> orderHistory = new ArrayList<Order>(); // Menyimpan order yang pernah dipesan oleh user
 
     // Constructor
     public User(String nama, String nomorTelepon, String email, String lokasi, String role){
