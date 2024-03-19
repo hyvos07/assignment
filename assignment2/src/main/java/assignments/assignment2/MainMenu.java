@@ -17,19 +17,29 @@ public class MainMenu {
         while(programRunning){
             printHeader();
             startMenu();
-            int command = input.nextInt();
+
+            int command = 0; // Initial Value
+
+            try {
+                command = input.nextInt(); // In case inputnya bukan angka, masukkan try-catch
+            } catch (Exception e) {
+                command = -1; // Tandanya input tidak valid
+            }
+
             input.nextLine();
 
             if(command == 1){
+                // User Login
                 System.out.println("\nSilakan Login:");
                 System.out.print("Nama: ");
                 String nama = input.nextLine();
                 System.out.print("Nomor Telepon: ");
                 String noTelp = input.nextLine();
 
-                User checkUser = getUser(nama, noTelp);
+                User checkUser = getUser(nama, noTelp); // Cek apakah user dengan data tersebut ada di userList
 
                 if(checkUser == null){
+                    // Tidak ditemukan
                     System.out.println("Pengguna dengan data tersebut tidak ditemukan!");
                     continue;
                 } else {
@@ -81,7 +91,7 @@ public class MainMenu {
     public static User getUser(String nama, String nomorTelepon){
         // Iterasi setiap user di userList untuk mencari user dengan nama dan nomor telepon yang sesuai
         for (User user : userList) {
-            if(user.getNama().equals(nama) && user.getNomorTelepon().equals(nomorTelepon)){
+            if(user.getNomorTelepon().equals(nomorTelepon) && user.getNama().equals(nama)){
                 return user;
             }
         }
@@ -103,6 +113,7 @@ public class MainMenu {
                 continue;
             }
 
+            // Validasi restoran jika belum pernah ditambahkan sebelumnya
             Restaurant restoran = getResto(namaResto);
             if(restoran == null){
                 // Just in case kalau ada bug di program
@@ -129,6 +140,7 @@ public class MainMenu {
                 continue;
             }
 
+            // Input menu yang dipesan
             System.out.println("Order:");
             Menu[] listPesanan = new Menu[jumlahPesanan];
             boolean validOrder = true;
@@ -147,6 +159,7 @@ public class MainMenu {
                 listPesanan[i] = menuPesanan;
             }
 
+            // Validasi jika menu-menu yang dipesan ada di restoran
             if(!validOrder){
                 // Pesan error muncul belakangan disini
                 System.out.println("Mohon memesan menu yang tersedia di Restoran!\n");
@@ -174,11 +187,14 @@ public class MainMenu {
             Order selectedOrder = getOrder(orderID, userLoggedIn);
 
             if (selectedOrder == null) {
+                // Validasi jika orderID tidak ditemukan
                 System.out.println("Order ID tidak dapat ditemukan.\n");
                 continue;
             }
 
             // Print Bill
+
+            // Pengambilan tanggal dari orderID
             String orderDay = orderID.substring(4, 6);
             String orderMonth = orderID.substring(6, 8);
             String orderYear = orderID.substring(8, 12);
@@ -192,6 +208,7 @@ public class MainMenu {
 
             System.out.println("Pesanan:");
             for(Menu menu : selectedOrder.items){
+                // Print semua menu yang dipesan
                 System.out.println("- " + menu.getNamaMakanan() + " " + (int) menu.getHarga());
             }
 
@@ -208,6 +225,7 @@ public class MainMenu {
             System.out.print("Nama Restoran: ");
             String namaResto = input.nextLine().toLowerCase();
 
+            // Cek apakah restoran ada di sistem
             if(checkResto(namaResto)){
                 Restaurant restoran = getResto(namaResto);
                 if(restoran == null){
@@ -220,10 +238,12 @@ public class MainMenu {
                 restoran.sortMenu(); // Sort menu berdasarkan harga dan nama
 
                 for(int i = 0; i < restoran.getJumlahMenu(); i++){
+                    // Print semua menu yang ada di restoran tersebut
                     Menu menu = restoran.getMenu(i);
                     System.out.println((int) (i + 1) + ". " + menu.getNamaMakanan() + " " + (int) menu.getHarga());
                 }
             } else {
+                // Error case
                 System.out.println("Restoran tidak terdaftar pada sistem.");
                 continue;
             }
@@ -248,13 +268,15 @@ public class MainMenu {
             System.out.print("Status: ");
             String statusOrder = input.nextLine().toLowerCase();
 
+            // Syarat diubah: pesan == selesai atau Selesai dan selectedOrder.orderFinished == false
             if (statusOrder.equals("selesai") && !selectedOrder.orderFinished){
                 selectedOrder.orderFinished = true;
                 System.out.printf("Status pesanan dengan ID %s berhasil diupdate!\n", orderID);
             } else if(selectedOrder.orderFinished) {
+                // Jika pesanan sudah selesai (selectedOrder.orderFinished == true)
                 System.out.printf("Status pesanan dengan ID %s tidak berhasil diupdate!\n", orderID);
             } else {
-                System.out.println("Input tidak valid, coba lagi!");
+                System.out.println("Input tidak valid, coba lagi!\n");
                 continue;
             }
 
@@ -267,6 +289,7 @@ public class MainMenu {
 
         System.out.println("\n-------------- Tambah Restoran ----------------");
         while(true){
+            // Input nama restoran
             System.out.print("Nama: ");
             String namaRestoDisplay = input.nextLine();
             String namaResto = namaRestoDisplay.trim().replace(" ", "");
@@ -284,6 +307,7 @@ public class MainMenu {
                 continue;
             }
 
+            // Input jumlah menu yang disediakan
             System.out.print("Jumlah Makanan: ");
             int jumlahMenu = input.nextInt();
             input.nextLine();
@@ -292,9 +316,16 @@ public class MainMenu {
             ArrayList<Menu> newMenuList = new ArrayList<Menu>();
             boolean validMenu = true;
 
+            // Input semua menu yang disediakan
             for(int i = 0; i < jumlahMenu; i++){
                 String menuString = input.nextLine();
                 String[] menuData = menuString.split(" ");
+
+                if(menuData.length < 2){
+                    // Validasi input menu; minimal ada 2 kata (nama makanan dan harga)
+                    validMenu = false;
+                    continue;
+                }
 
                 String namaMakanan = "";
                 int harga = 0;
@@ -319,16 +350,18 @@ public class MainMenu {
                 if (harga > 0) {
                     newMenuList.add(new Menu(namaMakanan, (double) harga));
                 } else {
-                    break;
+                    continue; // Tidak menambahkan menu jika harga tidak valid
                 }
             }
 
             if(validMenu){
+                // Jika semua menu yang diinput valid, maka restoran dan menu-menu yang diinput akan ditambahkan ke restoList
                 restoList.add(newResto);
                 newResto.addMenu(newMenuList);
                 System.out.printf("Restoran %s berhasil didaftarkan.\n", namaRestoDisplay);
                 break;
             } else {
+                // Jika ada menu yang tidak valid, maka restoran tidak akan ditambahkan ke restoList dan muncul pesan error
                 System.out.println("Harga menu harus bilangan bulat!\n");
                 continue;
             }
@@ -337,19 +370,28 @@ public class MainMenu {
 
     public static void handleHapusRestoran(){
         System.out.println("\n--------------- Hapus Restoran ---------------");
-        System.out.print("Nama Restoran: ");
-        String namaResto = input.nextLine();
 
-        if(checkResto(namaResto)){
-            for (int i = 0; i < restoList.size(); i++) {
-                if(restoList.get(i).getNama().toLowerCase().equals(namaResto.toLowerCase())){
-                    restoList.remove(i);
-                    System.out.println("Restoran berhasil dihapus.");
+        while(true){
+            // Input nama restoran yang mau dihapus
+            System.out.print("Nama Restoran: ");
+            String namaResto = input.nextLine();
+
+            if(checkResto(namaResto)){
+                // Jika restoran ada, hapus restoran dari restoList
+                for (int i = 0; i < restoList.size(); i++) {
+                    if(restoList.get(i).getNama().toLowerCase().equals(namaResto.toLowerCase())){
+                        restoList.remove(i);
+                        System.out.println("Restoran berhasil dihapus.");
+                        break;
+                    }
                 }
+            } else {
+                // Jika restoran tidak ada, munculkan pesan error
+                System.out.println("Restoran tidak terdaftar pada sistem.\n");
+                continue;
             }
-        } else {
-            System.out.println("Restoran tidak terdaftar pada sistem.");
-            // Jika restoran tidak ada, balik ke menu admin
+
+            break; // Keluar dari loop jika sudah berhasil menghapus restoran
         }
     }
 

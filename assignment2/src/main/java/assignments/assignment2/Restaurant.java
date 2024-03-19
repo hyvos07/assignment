@@ -38,7 +38,7 @@ public class Restaurant {
     // Mencari menu bedasarkan namanya
     public Menu searchMenu(String namaMakanan){
         for (int i = 0; i < menuList.size(); i++){
-            if (menuList.get(i).getNamaMakanan().toLowerCase().equals(namaMakanan.toLowerCase())){
+            if (menuList.get(i).getNamaMakanan().equals(namaMakanan)){
                 return menuList.get(i);
             }
         }
