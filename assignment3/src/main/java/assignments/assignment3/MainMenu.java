@@ -36,14 +36,23 @@ public class MainMenu {
         boolean exit = false;
         while (!exit) {
             startMenu();
-            int choice = input.nextInt();
-            input.nextLine();
+            int choice;
+            try {
+                choice = input.nextInt();
+                input.nextLine();
+            } catch (Exception e) {
+                input.nextLine();
+                System.out.println("Input tidak valid, silakan coba lagi.");
+                continue;
+            }
             switch (choice) {
                 case 1 -> login();
                 case 2 -> exit = true;
                 default -> System.out.println("Pilihan tidak valid, silakan coba lagi.");
             }
         }
+
+        System.out.println("Terima kasih telah menggunakan DepeFood!");
 
         input.close();
     }
@@ -66,6 +75,7 @@ public class MainMenu {
             loginManager.getSystem(userLoggedIn.getRole()).run(userLoggedIn);
         } catch (Exception e) {
             System.out.println("Terjadi error tidak terduga. Silakan coba lagi.");
+            input.nextLine();
             e.printStackTrace();
         }
     }
