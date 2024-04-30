@@ -3,18 +3,20 @@ package assignments.assignment3;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import assignments.assignment2.Restaurant;
-import assignments.assignment2.User;
-import assignments.assignment3.LoginManager
+import assignments.assignment3.items.Restaurant;
+import assignments.assignment3.items.User;
+import assignments.assignment3.LoginManager;
 import assignments.assignment3.payment.CreditCardPayment;
 import assignments.assignment3.payment.DebitPayment;
 import assignments.assignment3.systemCLI.AdminSystemCLI;
 import assignments.assignment3.systemCLI.CustomerSystemCLI;
+import assignments.assignment3.systemCLI.UserSystemCLI;
+
 
 public class MainMenu {
     private final Scanner input;
     private final LoginManager loginManager;
-    private static ArrayList<Restaurant> restoList;
+    private static ArrayList<Restaurant> restoList = new ArrayList<Restaurant>();
     private static ArrayList<User> userList;
 
     public MainMenu(Scanner in, LoginManager loginManager) {
@@ -28,6 +30,8 @@ public class MainMenu {
     }
 
     public void run(){
+        initUser(); // Isi userList dengan akun2 nya
+
         printHeader();
         boolean exit = false;
         while (!exit) {
@@ -51,11 +55,19 @@ public class MainMenu {
         System.out.print("Nomor Telepon: ");
         String noTelp = input.nextLine();
 
-        // TODO: Validasi input login
+        User userLoggedIn = getUser(nama, noTelp);
 
-        User userLoggedIn; // TODO: lengkapi
+        if(userLoggedIn == null){
+            System.out.println("Pengguna dengan data tersebut tidak ditemukan!");
+            return;
+        }
 
-        loginManager.getSystem(userLoggedIn.role);
+        try {
+            loginManager.getSystem(userLoggedIn.getRole()).run(userLoggedIn);
+        } catch (Exception e) {
+            System.out.println("Terjadi error tidak terduga. Silakan coba lagi.");
+            e.printStackTrace();
+        }
     }
 
     private static void printHeader(){
@@ -69,7 +81,7 @@ public class MainMenu {
     }
 
     private static void startMenu(){
-        System.out.println("Selamat datang di DepeFood!");
+        System.out.println("\nSelamat datang di DepeFood!");
         System.out.println("--------------------------------------------");
         System.out.println("Pilih menu:");
         System.out.println("1. Login");
@@ -81,7 +93,6 @@ public class MainMenu {
     public static void initUser(){
         userList = new ArrayList<User>();
 
-        //TODO: Adjust constructor dan atribut pada class User di Assignment 2
         userList.add(new User("Thomas N", "9928765403", "thomas.n@gmail.com", "P", "Customer", new DebitPayment(), 500000));
         userList.add(new User("Sekar Andita", "089877658190", "dita.sekar@gmail.com", "B", "Customer", new CreditCardPayment(), 2000000));
         userList.add(new User("Sofita Yasusa", "084789607222", "sofita.susa@gmail.com", "T", "Customer", new DebitPayment(), 750000));
@@ -90,5 +101,42 @@ public class MainMenu {
 
         userList.add(new User("Admin", "123456789", "admin@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
         userList.add(new User("Admin Baik", "9123912308", "admin.b@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
+    }
+
+    // Helper Function untuk ambil user dari list di atas
+    public static User getUser(String nama, String nomorTelepon){
+        // Iterasi setiap user di userList untuk mencari user dengan nama dan nomor telepon yang sesuai
+        for (User user : userList) {
+            if(user.getNomorTelepon().equals(nomorTelepon) && user.getNama().equals(nama)){
+                return user;
+            }
+        }
+        // Jika tidak ditemukan user dengan nama dan nomor telepon yang sesuai, return null (user tidak ditemukan)
+        return null;
+    }
+
+    // Helper Function untuk mencari restoran berdasarkan nama
+    public static Restaurant getResto(String namaResto){
+        for (Restaurant resto : restoList) {
+            if(resto.getNama().toLowerCase().equals(namaResto.toLowerCase())){
+                return resto;
+            }
+        }
+        return null; // In case tidak ada restorannya
+    }
+
+    // Helper Function untuk validasi inputan berupa angka
+    public static boolean checkNum(String str){
+        for (int i = 0; i < str.length(); i++) {
+            char chr = str.charAt(i);
+            if (!Character.isDigit(chr)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static ArrayList<Restaurant> getRestoList(){
+        return restoList;
     }
 }
