@@ -227,12 +227,15 @@ public class CustomerSystemCLI extends UserSystemCLI{
                 selectedOrder.getRestaurant().setSaldo(selectedOrder.getRestaurant().getSaldo() + orderCost);
 
                 if(pilihan == 1){
-                    long transactionFee = (long) ((CreditCardPayment) userLoggedIn.getPaymentSystem()).countTransactionFee(orderCost);
+                    long totalFee = ((CreditCardPayment) userLoggedIn.getPaymentSystem()).processPayment(orderCost);
+                    long transactionFee = ((CreditCardPayment) userLoggedIn.getPaymentSystem()).countTransactionFee(orderCost);
+
+                    if(userLoggedIn.getSaldo() - totalFee < 0){
+                        System.out.println("Saldo tidak mencukupi. Mohon menggunakan metode pembayaran yang lain.");
+                        return;
+                    }
                     
-                    userLoggedIn.setSaldo(
-                        userLoggedIn.getSaldo() - 
-                        ((CreditCardPayment) userLoggedIn.getPaymentSystem()).processPayment(orderCost)
-                    );
+                    userLoggedIn.setSaldo(userLoggedIn.getSaldo() - totalFee);
                     
                     System.out.println(
                         "\nBerhasil Membayar Bill sebesar Rp " + 
@@ -240,37 +243,40 @@ public class CustomerSystemCLI extends UserSystemCLI{
                         transactionFee
                     );
                 } else {
-                    long orderFee = ((DebitPayment) userLoggedIn.getPaymentSystem()).processPayment(orderCost);
+                    long totalFee = ((DebitPayment) userLoggedIn.getPaymentSystem()).processPayment(orderCost);
 
-                    if(orderFee < 0){
-                        System.out.println("Jumlah pesanan < 50000. Mohon menggunakan metode pembayaran yang lain.\n");
+                    if(totalFee < 0){
+                        System.out.println("Jumlah pesanan < 50000. Mohon menggunakan metode pembayaran yang lain.");
+                        return;
+                    } else if(userLoggedIn.getSaldo() - totalFee < 0){
+                        System.out.println("Saldo tidak mencukupi. Mohon menggunakan metode pembayaran yang lain");
                         return;
                     }
 
-                    userLoggedIn.setSaldo(userLoggedIn.getSaldo() - orderFee);
+                    userLoggedIn.setSaldo(userLoggedIn.getSaldo() - totalFee);
 
                     System.out.println("\nBerhasil Membayar Bill sebesar Rp " + orderCost);
                 }
             } catch (Exception e) {
                 // Catch error dari casting yang dilakukan
-                System.out.println("User belum memiliki metode pembayaran ini!\n");
+                System.out.println("User belum memiliki metode pembayaran ini!");
                 return;
             }
 
+            handleUpdateStatusPesanan(orderID, userLoggedIn);
+            
             break;
         }
     }
 
-    protected boolean handleUpdateStatusPesanan(String orderID, User userLoggedIn){
+    protected void handleUpdateStatusPesanan(String orderID, User userLoggedIn){
         Order selectedOrder = getOrder(orderID, userLoggedIn);
 
         if (!selectedOrder.getOrderStatus()){
             selectedOrder.setOrderStatus();
         } else {
-            return false;
+            throw new IllegalArgumentException("Pesanan sudah lunas!");
         }
-
-        return true;
     }
 
     protected void handleCekSaldo(){

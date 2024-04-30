@@ -15,8 +15,15 @@ public abstract class UserSystemCLI {
         boolean isLoggedIn = true;
         while (isLoggedIn) {
             displayMenu();
-            int command = input.nextInt();
-            input.nextLine();
+            int command;
+            try {
+                command = input.nextInt();
+                input.nextLine();
+            } catch (Exception e) {
+                input.nextLine();
+                System.out.println("Input tidak valid, silakan coba lagi.");
+                continue;
+            }
             isLoggedIn = handleMenu(command);
         }
     }
