@@ -11,7 +11,7 @@ public class Restaurant {
     private ArrayList<Menu> menuList = new ArrayList<Menu>(); // Menyimpan menu yang disediakan oleh restaurant ini
 
     // Untuk TP 3: Saldo atau penghasilan dari Restoran
-    long saldo;
+    private long saldo;
 
     public Restaurant(String nama, int jumlahMenu, long saldo){
         this.nama = nama;

@@ -31,6 +31,6 @@ public abstract class UserSystemCLI {
         }
     }
 
-    abstract void displayMenu(); // Implementasi berbeda di tiap CLI Sysytem
-    abstract boolean handleMenu(int command); // Menu yang tersedia untuk role berbeda akan berbeda juga
+    public abstract void displayMenu(); // Implementasi berbeda di tiap CLI Sysytem
+    public abstract boolean handleMenu(int command); // Menu yang tersedia untuk role berbeda akan berbeda juga
 }

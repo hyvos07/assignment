@@ -16,8 +16,8 @@ public class User {
     protected ArrayList<Order> orderHistory = new ArrayList<Order>(); // Menyimpan order yang pernah dipesan oleh user
 
     // Untuk TP 3: Sistem Payment dan Saldo User
-    DepeFoodPaymentSystem payment;
-    long saldo;
+    private DepeFoodPaymentSystem payment;
+    private long saldo;
 
     // Constructor
     public User(String nama, String nomorTelepon, String email, String lokasi, String role, DepeFoodPaymentSystem payment, long saldo){

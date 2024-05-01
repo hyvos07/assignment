@@ -8,7 +8,7 @@ import assignments.assignment3.systemCLI.UserSystemCLI;
 
 public class LoginManager {
     private final AdminSystemCLI adminSystem;
-    private final CustomerSystemCLI customerSystem;
+    private final CustomerSystemCLI customerSystem; 
 
     public LoginManager(AdminSystemCLI adminSystem, CustomerSystemCLI customerSystem) {
         this.adminSystem = adminSystem;

@@ -12,7 +12,6 @@ import assignments.assignment3.MainMenu;
 // Class AdminSystemCLI: Implementasi CLI system untuk Admin
 
 public class AdminSystemCLI extends UserSystemCLI{
-    private static ArrayList<Restaurant> restoList = MainMenu.getRestoList();
 
     @Override
     public boolean handleMenu(int command){
@@ -108,7 +107,7 @@ public class AdminSystemCLI extends UserSystemCLI{
 
             if(validMenu){
                 // Jika semua menu yang diinput valid, maka restoran dan menu-menu yang diinput akan ditambahkan ke restoList
-                restoList.add(newResto);
+                MainMenu.getRestoList().add(newResto);
                 newResto.addMenu(newMenuList);
                 System.out.printf("Restoran %s berhasil didaftarkan.\n", namaRestoDisplay);
                 break;
@@ -121,7 +120,7 @@ public class AdminSystemCLI extends UserSystemCLI{
     }
 
     protected void handleHapusRestoran(){
-        if(restoList.size() == 0){
+        if(MainMenu.getRestoList().size() == 0){
             // Jika tidak ada restoran yang terdaftar, munculkan pesan error
             System.out.println("Belum ada restoran yang terdaftar pada sistem.\n");
             return;
@@ -136,9 +135,9 @@ public class AdminSystemCLI extends UserSystemCLI{
 
             if(MainMenu.getResto(namaResto) != null){
                 // Jika restoran ada, hapus restoran dari restoList
-                for (int i = 0; i < restoList.size(); i++) {
-                    if(restoList.get(i).getNama().toLowerCase().equals(namaResto.toLowerCase())){
-                        restoList.remove(i);
+                for (int i = 0; i < MainMenu.getRestoList().size(); i++) {
+                    if(MainMenu.getRestoList().get(i).getNama().toLowerCase().equals(namaResto.toLowerCase())){
+                        MainMenu.getRestoList().remove(i);
                         System.out.println("Restoran berhasil dihapus.");
                         break;
                     }

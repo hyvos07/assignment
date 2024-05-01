@@ -16,8 +16,7 @@ import assignments.assignment3.payment.DepeFoodPaymentSystem;
 // Class CustomerSystemCLI: Implementasi CLI system untuk Customer
 
 public class CustomerSystemCLI extends UserSystemCLI{
-    private static ArrayList<Restaurant> restoList = MainMenu.getRestoList();
-
+    
     @Override
     public boolean handleMenu(int choice){
         switch(choice){
