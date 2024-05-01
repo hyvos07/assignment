@@ -2,13 +2,15 @@ package assignments.assignment3.items;
 
 import java.util.ArrayList;
 
+// Class Restaurant merepresentasikan sebuah object restoran yang menyediakan berbagai menu makanan [Diadaptasi dari TP 2]
+
 public class Restaurant {
     // Attributes yang dimiliki sebuah Restaurant
     private String nama;
     private int jumlahMenu;
     private ArrayList<Menu> menuList = new ArrayList<Menu>(); // Menyimpan menu yang disediakan oleh restaurant ini
 
-    // Untuk TP 3
+    // Untuk TP 3: Saldo atau penghasilan dari Restoran
     long saldo;
 
     public Restaurant(String nama, int jumlahMenu, long saldo){
@@ -58,7 +60,7 @@ public class Restaurant {
         return null;
     }
 
-    // Bubble Sort Function bedasarkan harga lalu nama (jika sama)
+    // Bubble Sort Function bedasarkan harga dan nama (jika harga sama di sort dengan memperhatikan nama)
     public void sortMenu(){
         int n = menuList.size();
 

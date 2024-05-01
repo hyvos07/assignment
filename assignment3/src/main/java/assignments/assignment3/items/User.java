@@ -3,6 +3,8 @@ package assignments.assignment3.items;
 import java.util.ArrayList;
 import assignments.assignment3.payment.DepeFoodPaymentSystem;
 
+// Class User: Object user dari sistem
+
 public class User {
     // Attributes yang dimiliki seorang User
     private String nama;
@@ -13,7 +15,7 @@ public class User {
 
     protected ArrayList<Order> orderHistory = new ArrayList<Order>(); // Menyimpan order yang pernah dipesan oleh user
 
-    // Untuk TP 3
+    // Untuk TP 3: Sistem Payment dan Saldo User
     DepeFoodPaymentSystem payment;
     long saldo;
 

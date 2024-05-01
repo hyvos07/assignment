@@ -9,6 +9,8 @@ import assignments.assignment3.items.User;
 
 import assignments.assignment3.MainMenu;
 
+// Class AdminSystemCLI: Implementasi CLI system untuk Admin
+
 public class AdminSystemCLI extends UserSystemCLI{
     private static ArrayList<Restaurant> restoList = MainMenu.getRestoList();
 

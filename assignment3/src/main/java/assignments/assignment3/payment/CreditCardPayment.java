@@ -1,7 +1,9 @@
 package assignments.assignment3.payment;
 
+// Class CreditCardPayment: Implementasi pembayaran dengan kartu kredit
+
 public class CreditCardPayment implements DepeFoodPaymentSystem{
-    public static double TRANSACTION_FEE_PERCENTAGE = 0.02;
+    public static double TRANSACTION_FEE_PERCENTAGE = 0.02; // 2% Fee dari kartu kredit (dibebankan pada user aja)
 
     // Menghitung biaya transaksi dari kartu kredit
     public long countTransactionFee(long amount){
@@ -10,6 +12,6 @@ public class CreditCardPayment implements DepeFoodPaymentSystem{
 
     @Override
     public long processPayment(long amount) {
-        return amount + countTransactionFee(amount);
+        return amount + countTransactionFee(amount); // Jumlah saldo yang harus dipotong ke saldo user
     }
 }

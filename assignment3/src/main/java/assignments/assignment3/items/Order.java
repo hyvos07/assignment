@@ -2,6 +2,8 @@ package assignments.assignment3.items;
 
 import java.util.ArrayList; // XXX: Apakah parameter boleh diganti?
 
+// Class Order merepresentasikan sebuah object pesanan yang dilakukan oleh user [Diadaptasi dari TP 2]
+
 public class Order {
     // Attributes yang dimiliki order dari sebuah user
     private String orderId;
@@ -41,6 +43,8 @@ public class Order {
     public boolean getOrderStatus(){
         return orderFinished;
     }
+
+    // Penambahan Method: Merubah Status Order
 
     public void setOrderStatus(){
         this.orderFinished = !this.orderFinished;

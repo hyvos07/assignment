@@ -13,6 +13,8 @@ import assignments.assignment3.payment.CreditCardPayment;
 import assignments.assignment3.payment.DebitPayment;
 import assignments.assignment3.payment.DepeFoodPaymentSystem;
 
+// Class CustomerSystemCLI: Implementasi CLI system untuk Customer
+
 public class CustomerSystemCLI extends UserSystemCLI{
     private static ArrayList<Restaurant> restoList = MainMenu.getRestoList();
 
@@ -132,7 +134,7 @@ public class CustomerSystemCLI extends UserSystemCLI{
         while(true){    
             System.out.print("Masukkan Order ID: ");
             String orderID = input.nextLine();
-            Order selectedOrder = getOrder(orderID, userLoggedIn);
+            Order selectedOrder = getOrder(orderID, userLoggedIn); // Cari order dari si User
 
             if (selectedOrder == null) {
                 // Validasi jika orderID tidak ditemukan
@@ -140,7 +142,7 @@ public class CustomerSystemCLI extends UserSystemCLI{
                 continue;
             }
 
-            printBill(orderID, selectedOrder);
+            printBill(orderID, selectedOrder); // Function untuk print bill
 
             break;
         }
@@ -186,6 +188,7 @@ public class CustomerSystemCLI extends UserSystemCLI{
         System.out.println("\n--------------- Bayar Bill ---------------");
 
         while(true){    
+            // Kurang lebih sama saat tampilkan Bill
             System.out.print("Masukkan Order ID: ");
             orderID = input.nextLine();
             selectedOrder = getOrder(orderID, userLoggedIn);
@@ -208,34 +211,39 @@ public class CustomerSystemCLI extends UserSystemCLI{
             "\nOpsi Pembayaran:\n" +
             "1. Credit Card\n" +
             "2. Debit"
-        );
+        ); // Opsi pembayaran
 
         while(true){
             int pilihan;
-            int orderCost = selectedOrder.calculateTotal();
+            int orderCost = selectedOrder.calculateTotal(); // Total biaya pesanan tanpa pajak CC dan lainnya
 
             System.out.print("Pilihan Metode Pembayaran: ");
             try {
                 pilihan = input.nextInt();
                 input.nextLine();
             } catch (Exception e) {
+                // Validasi jika input bukan angka
+                input.nextLine();
                 System.out.println("Pilihan bukan berupa angka, coba masukkan kembali pilihan anda.");
                 continue;
             }
 
             try {
+                // Tambah saldo restoran dengan biaya pesanan awal
                 selectedOrder.getRestaurant().setSaldo(selectedOrder.getRestaurant().getSaldo() + orderCost);
 
                 if(pilihan == 1){
+                    // Kalkulasi biaya transaksi dan pajak Credit Card secara terpisah
                     long totalFee = ((CreditCardPayment) userLoggedIn.getPaymentSystem()).processPayment(orderCost);
                     long transactionFee = ((CreditCardPayment) userLoggedIn.getPaymentSystem()).countTransactionFee(orderCost);
 
                     if(userLoggedIn.getSaldo() - totalFee < 0){
+                        // Saldo tidak mencukupi
                         System.out.println("Saldo tidak mencukupi. Mohon menggunakan metode pembayaran yang lain.");
                         return;
                     }
                     
-                    userLoggedIn.setSaldo(userLoggedIn.getSaldo() - totalFee);
+                    userLoggedIn.setSaldo(userLoggedIn.getSaldo() - totalFee); // Potong saldo user
                     
                     System.out.println(
                         "\nBerhasil Membayar Bill sebesar Rp " + 
@@ -243,17 +251,20 @@ public class CustomerSystemCLI extends UserSystemCLI{
                         transactionFee
                     );
                 } else {
+                    // Kalkulasi biaya transaksi Debit
                     long totalFee = ((DebitPayment) userLoggedIn.getPaymentSystem()).processPayment(orderCost);
 
                     if(totalFee < 0){
+                        // Validasi jika pesanan kurang dari 50000
                         System.out.println("Jumlah pesanan < 50000. Mohon menggunakan metode pembayaran yang lain.");
                         return;
                     } else if(userLoggedIn.getSaldo() - totalFee < 0){
+                        // Saldo tidak mencukupi
                         System.out.println("Saldo tidak mencukupi. Mohon menggunakan metode pembayaran yang lain");
                         return;
                     }
 
-                    userLoggedIn.setSaldo(userLoggedIn.getSaldo() - totalFee);
+                    userLoggedIn.setSaldo(userLoggedIn.getSaldo() - totalFee); // Potong saldo user
 
                     System.out.println("\nBerhasil Membayar Bill sebesar Rp " + orderCost);
                 }
@@ -263,23 +274,25 @@ public class CustomerSystemCLI extends UserSystemCLI{
                 return;
             }
 
-            handleUpdateStatusPesanan(orderID, userLoggedIn);
+            handleUpdateStatusPesanan(orderID, userLoggedIn); // Update status pesanan biar ga dibayar lagi
             
             break;
         }
     }
 
     protected void handleUpdateStatusPesanan(String orderID, User userLoggedIn){
-        Order selectedOrder = getOrder(orderID, userLoggedIn);
+        Order selectedOrder = getOrder(orderID, userLoggedIn); // Ambil order dari order history
 
         if (!selectedOrder.getOrderStatus()){
-            selectedOrder.setOrderStatus();
+            selectedOrder.setOrderStatus(); // Set status pesanan menjadi lunas
         } else {
-            throw new IllegalArgumentException("Pesanan sudah lunas!");
+            // Harusnya tidak perlu, karena pesanan yang sudah lunas sudah divalidasi di awal
+            throw new IllegalArgumentException("Pesanan sudah lunas!"); // Jika pesanan sudah lunas
         }
     }
 
     protected void handleCekSaldo(){
+        // Print saldo user yang sedang login
         System.out.println("Sisa saldo sebesar Rp " + userLoggedIn.getSaldo() + "\n");
     }
 

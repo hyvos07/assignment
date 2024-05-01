@@ -12,11 +12,10 @@ import assignments.assignment3.systemCLI.AdminSystemCLI;
 import assignments.assignment3.systemCLI.CustomerSystemCLI;
 import assignments.assignment3.systemCLI.UserSystemCLI;
 
-
 public class MainMenu {
     private final Scanner input;
     private final LoginManager loginManager;
-    private static ArrayList<Restaurant> restoList = new ArrayList<Restaurant>();
+    private static ArrayList<Restaurant> restoList = new ArrayList<Restaurant>(); // Initialize ArrayList disini
     private static ArrayList<User> userList;
 
     public MainMenu(Scanner in, LoginManager loginManager) {
@@ -26,7 +25,7 @@ public class MainMenu {
 
     public static void main(String[] args) {
         MainMenu mainMenu = new MainMenu(new Scanner(System.in), new LoginManager(new AdminSystemCLI(), new CustomerSystemCLI()));
-        mainMenu.run();
+        mainMenu.run(); // Run Program
     }
 
     public void run(){
@@ -37,11 +36,12 @@ public class MainMenu {
         while (!exit) {
             startMenu();
             int choice;
+            // Validasi inputan -- Harus berupa angka
             try {
                 choice = input.nextInt();
                 input.nextLine();
             } catch (Exception e) {
-                input.nextLine();
+                input.nextLine(); // Ambil \n yang belum keambil jika ada error
                 System.out.println("Input tidak valid, silakan coba lagi.");
                 continue;
             }
@@ -52,7 +52,7 @@ public class MainMenu {
             }
         }
 
-        System.out.println("Terima kasih telah menggunakan DepeFood!");
+        System.out.println("Terima kasih telah menggunakan DepeFood!"); // Exit Message
 
         input.close();
     }
@@ -64,16 +64,19 @@ public class MainMenu {
         System.out.print("Nomor Telepon: ");
         String noTelp = input.nextLine();
 
-        User userLoggedIn = getUser(nama, noTelp);
+        User userLoggedIn = getUser(nama, noTelp); // Cari user di userList
 
         if(userLoggedIn == null){
+            // Jika user tidak ditemukan, print pesan error dan return
             System.out.println("Pengguna dengan data tersebut tidak ditemukan!");
             return;
         }
 
         try {
+            // Jalankan system CLI berdasarkan role user yang login
             loginManager.getSystem(userLoggedIn.getRole()).run(userLoggedIn);
         } catch (Exception e) {
+            // Exception Handling paling atas, supaya menangkap exception yang tidak di handle di CLI System
             System.out.println("Terjadi error tidak terduga. Silakan coba lagi.");
             input.nextLine();
             e.printStackTrace();
@@ -146,6 +149,7 @@ public class MainMenu {
         return true;
     }
 
+    // Helper Function untuk mengambil reference dari restoList
     public static ArrayList<Restaurant> getRestoList(){
         return restoList;
     }
