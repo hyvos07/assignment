@@ -51,7 +51,7 @@ public class CustomerSystemCLI extends UserSystemCLI{
         char[] kota = new char[]{'P', 'U', 'T', 'S', 'B'}; // Daftar Kota yang dapat dijangkau
         String[] tarif = new String[]{"10000", "20000", "35000", "40000", "60000"}; // Daftar tarif untuk menjangkau kota tsb
 
-        System.out.println("\n-------------- Buat Pesanan ----------------");
+        System.out.println("\n--------------- Buat Pesanan ---------------");
         while(true){
             // Input nama restoran
             System.out.print("Nama Restoran: ");

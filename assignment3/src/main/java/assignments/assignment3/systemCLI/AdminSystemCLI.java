@@ -38,7 +38,7 @@ public class AdminSystemCLI extends UserSystemCLI{
     protected void handleTambahRestoran(){
         Restaurant newResto; // Restoran yang akan ditambahkan
 
-        System.out.println("\n-------------- Tambah Restoran ----------------");
+        System.out.println("\n--------------- Tambah Restoran ---------------");
         while(true){
             // Input nama restoran
             System.out.print("Nama: ");
