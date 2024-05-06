@@ -1,69 +1,60 @@
 package assignments.assignment2;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Restaurant {
-    // Attributes yang dimiliki sebuah Restaurant
     private String nama;
-    private int jumlahMenu;
-    private ArrayList<Menu> menuList = new ArrayList<Menu>(); // Menyimpan menu yang disediakan oleh restaurant ini
-
-    public Restaurant(String nama, int jumlahMenu){
+    private ArrayList<Menu> menu;
+    public Restaurant(String nama){
         this.nama = nama;
-        this.jumlahMenu = jumlahMenu;
+        this.menu = new ArrayList<>();
     }
     
-    // Getter
-    public String getNama(){
+    public String getNama() {
         return nama;
     }
-
-    public Menu getMenu(int index){
-        return menuList.get(index);
+    public void addMenu(Menu newMenu){
+        menu.add(newMenu);
+    }
+    public ArrayList<Menu> getMenu() {
+        return menu;
     }
 
-    public int getJumlahMenu(){
-        return jumlahMenu;
-    }
-
-    // ====== Method ======
-    
-    // Menambahkan semua menu baru ke dalam menuList
-    public void addMenu(ArrayList<Menu> newMenus){
-        for (int i = 0; i < newMenus.size(); i++){
-            menuList.add(newMenus.get(i));
+    private ArrayList<Menu> sortMenu(){
+        Menu[] menuArr = new Menu[menu.size()];
+        for(int i=0; i < menu.size();i++){
+            menuArr[i] = menu.get(i);
         }
-    }
-
-    // Mencari menu bedasarkan namanya
-    public Menu searchMenu(String namaMakanan){
-        for (int i = 0; i < menuList.size(); i++){
-            if (menuList.get(i).getNamaMakanan().equals(namaMakanan)){
-                return menuList.get(i);
-            }
-        }
-        return null;
-    }
-
-    // Bubble Sort Function bedasarkan harga lalu nama (jika sama)
-    public void sortMenu(){
-        int n = menuList.size();
-
-        for (int i = 0; i < n-1; i++){
-            for (int j = 0; j < n-i-1; j++){
-                if (menuList.get(j).getHarga() > menuList.get(j+1).getHarga()){
-                    Menu temp = menuList.get(j);
-                    menuList.set(j, menuList.get(j+1));
-                    menuList.set(j+1, temp);
-                } else if (menuList.get(j).getHarga() == menuList.get(j+1).getHarga()){
-                    if (menuList.get(j).getNamaMakanan().compareTo(menuList.get(j+1).getNamaMakanan()) > 0){
-                        // Jika harga sama namun secara alfabet tidak urut
-                        Menu temp = menuList.get(j);
-                        menuList.set(j, menuList.get(j+1));
-                        menuList.set(j+1, temp);
-                    }
+        int n = menuArr.length;
+        for (int i = 0; i < n-1; i++) {
+            for (int j = 0; j < n-i-1; j++) {
+                if (menuArr[j].getHarga() > menuArr[j+1].getHarga()) {
+                    
+                    Menu temp = menuArr[j];
+                    menuArr[j] = menuArr[j+1];
+                    menuArr[j+1] = temp;
                 }
             }
         }
+        return new ArrayList<>(Arrays.asList(menuArr));
+    }
+    public String printMenu() {
+        StringBuilder menuString = new StringBuilder("Menu:\n");
+        DecimalFormat decimalFormat = new DecimalFormat();
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('\u0000');
+        decimalFormat.setDecimalFormatSymbols(symbols);
+        int menuNumber = 1;
+        for (Menu menuItem : sortMenu()) {
+            menuString.append(menuNumber).append(". ").append(menuItem.getNamaMakanan()).append(" ").append(decimalFormat.format(menuItem.getHarga())).append("\n");
+            menuNumber++;
+        }
+        if (menuString.length() > 0) {
+            menuString.deleteCharAt(menuString.length() - 1);
+        }
+        return menuString.toString();
     }
 }

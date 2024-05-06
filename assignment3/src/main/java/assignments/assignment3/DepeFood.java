@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 import assignments.assignment1.OrderGenerator;
 import assignments.assignment3.items.Menu;
+import assignments.assignment3.items.Order;
 import assignments.assignment3.items.Restaurant;
 import assignments.assignment3.items.User;
 import assignments.assignment3.payment.CreditCardPayment;
@@ -265,19 +266,4 @@ public class DepeFood {
     public static void setPenggunaLoggedIn(User user){
         userLoggedIn = user;
     }
-
-
-
-
-    
-
-    
-
-
-
-
-
-
-
-   
 }

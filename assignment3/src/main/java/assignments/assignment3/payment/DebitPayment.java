@@ -1,16 +1,18 @@
 package assignments.assignment3.payment;
 
-// Class DebitPayment: Implementasi pembayaran dengan kartu debit
+public class DebitPayment implements DepeFoodPaymentSystem {
+    private static final double MINIMUM_PAYMENT = 50000;
 
-public class DebitPayment implements DepeFoodPaymentSystem{
-    public static final double MINIMUM_TOTAL_PRICE = 50000; // Rp 50.000 minimal total harga
-    
     @Override
-    public long processPayment(long amount) {
-        if(amount < MINIMUM_TOTAL_PRICE){
-            return -1; // False return value
+    public long processPayment(long saldo, long amount) throws Exception {
+        if (amount < MINIMUM_PAYMENT) {
+            throw new Exception("Jumlah pesanan < 50000 mohon menggunakan metode pembayaran yang lain");
         }
 
-        return amount; // Debit langsung potong aja
+        if (saldo < amount) {
+            throw new Exception("Saldo tidak mencukupi mohon menggunakan metode pembayaran yang lain");
+        }
+
+        return amount;
     }
 }

@@ -1,78 +1,86 @@
 package assignments.assignment3.items;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import assignments.assignment3.payment.DepeFoodPaymentSystem;
 
-// Class User: Object user dari sistem
-
 public class User {
-    // Attributes yang dimiliki seorang User
+
     private String nama;
     private String nomorTelepon;
     private String email;
+    public final String role;
     private String lokasi;
-    private String role;
 
-    protected ArrayList<Order> orderHistory = new ArrayList<Order>(); // Menyimpan order yang pernah dipesan oleh user
-
-    // Untuk TP 3: Sistem Payment dan Saldo User
-    private DepeFoodPaymentSystem payment;
+    private DepeFoodPaymentSystem paymentSystem;
     private long saldo;
+    private ArrayList<Order> orderHistory;
 
-    // Constructor
-    public User(String nama, String nomorTelepon, String email, String lokasi, String role, DepeFoodPaymentSystem payment, long saldo){
+    public User(String nama, String nomorTelepon, String email, String lokasi, String role,
+            DepeFoodPaymentSystem paymentSystem, long saldo) {
         this.nama = nama;
         this.nomorTelepon = nomorTelepon;
         this.email = email;
         this.lokasi = lokasi;
         this.role = role;
-        this.payment = payment;
+        this.paymentSystem = paymentSystem;
         this.saldo = saldo;
+        orderHistory = new ArrayList<>();
     }
 
-    // Getter
-    public String getNama(){
-        return nama;
-    }
-
-    public String getNomorTelepon(){
-        return nomorTelepon;
-    }
-
-    public String getEmail(){
+    public String getEmail() {
         return email;
     }
 
-    public String getLokasi(){
+    public String getNama() {
+        return nama;
+    }
+
+    public String getLokasi() {
         return lokasi;
     }
 
-    public String getRole(){
+    public String getNomorTelepon() {
+        return nomorTelepon;
+    }
+
+    public long getSaldo() {
+        return saldo;
+    }
+
+    public String getRole() {
         return role;
     }
 
-    public void addOrderHistory(Order order){
+    public DepeFoodPaymentSystem getPaymentSystem() {
+        return paymentSystem;
+    }
+
+    public void addOrderHistory(Order order) {
         orderHistory.add(order);
     }
 
-    public ArrayList<Order> getOrderHistory(){
-        ArrayList<Order> orderList = new ArrayList<>();
-        for(Order order: orderHistory){
-            orderList.add(order);
+    public List<Order> getOrderHistory() {
+        return orderHistory;
+    }
+
+    public boolean isOrderBelongsToUser(String orderId) {
+        for (Order order : orderHistory) {
+            if (order.getOrderId().equals(orderId)) {
+                return true;
+            }
         }
-
-        return orderList;
+        return false;
     }
 
-    public DepeFoodPaymentSystem getPaymentSystem(){
-        return payment;
+    public void setSaldo(long saldo) {
+        this.saldo = saldo;
     }
 
-    public long getSaldo(){
-        return this.saldo;
+    @Override
+    public String toString() {
+        return String.format("User dengan nama %s dan nomor telepon %s", nama, nomorTelepon);
     }
 
-    public void setSaldo(long amount){
-        this.saldo = (long) amount;
-    }
 }

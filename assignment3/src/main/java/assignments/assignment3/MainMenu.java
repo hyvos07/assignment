@@ -5,19 +5,17 @@ import java.util.Scanner;
 
 import assignments.assignment3.items.Restaurant;
 import assignments.assignment3.items.User;
-import assignments.assignment3.LoginManager;
 import assignments.assignment3.payment.CreditCardPayment;
 import assignments.assignment3.payment.DebitPayment;
 import assignments.assignment3.systemCLI.AdminSystemCLI;
 import assignments.assignment3.systemCLI.CustomerSystemCLI;
 import assignments.assignment3.systemCLI.UserSystemCLI;
-import assignments.assignment3.systemCLI.UserSystemCLI;
 
 public class MainMenu {
     private final Scanner input;
     private final LoginManager loginManager;
-    private static ArrayList<Restaurant> restoList = new ArrayList<Restaurant>(); // Initialize ArrayList disini
     private static ArrayList<User> userList;
+    private static ArrayList<Restaurant> restoList;
 
     public MainMenu(Scanner in, LoginManager loginManager) {
         this.input = in;
@@ -25,35 +23,29 @@ public class MainMenu {
     }
 
     public static void main(String[] args) {
-        MainMenu mainMenu = new MainMenu(new Scanner(System.in), new LoginManager(new AdminSystemCLI(), new CustomerSystemCLI()));
-        mainMenu.run(); // Run Program
+        initUser();
+
+        restoList = new ArrayList<>();
+
+        MainMenu mainMenu = new MainMenu(new Scanner(System.in),
+                new LoginManager(new AdminSystemCLI(), new CustomerSystemCLI()));
+
+        mainMenu.run();
     }
 
-    public void run(){
-        initUser(); // Isi userList dengan akun2 nya
-
+    public void run() {
         printHeader();
         boolean exit = false;
         while (!exit) {
             startMenu();
-            int choice;
-            // Validasi inputan -- Harus berupa angka
-            try {
-                choice = input.nextInt();
-                input.nextLine();
-            } catch (Exception e) {
-                input.nextLine(); // Ambil \n yang belum keambil jika ada error
-                System.out.println("Input tidak valid, silakan coba lagi.");
-                continue;
-            }
+            int choice = input.nextInt();
+            input.nextLine();
             switch (choice) {
                 case 1 -> login();
                 case 2 -> exit = true;
                 default -> System.out.println("Pilihan tidak valid, silakan coba lagi.");
             }
         }
-
-        System.out.println("Terima kasih telah menggunakan DepeFood!"); // Exit Message
 
         input.close();
     }
@@ -66,24 +58,36 @@ public class MainMenu {
         System.out.print("Nomor Telepon: ");
         String noTelp = input.nextLine();
 
-        User userLoggedIn = getUser(nama, noTelp); // Cari user di userList
+        User userLoggedIn = getUser(nama, noTelp);
 
-        if(userLoggedIn == null){
-            // Jika user tidak ditemukan, print pesan error dan return
+        if (userLoggedIn == null) {
             System.out.println("Pengguna dengan data tersebut tidak ditemukan!");
             return;
         }
 
-        try {
-            // Jalankan system CLI berdasarkan role user yang login
-            loginManager.getSystem(userLoggedIn.getRole()).run(userLoggedIn);
-        } catch (Exception e) {
-            // Exception Handling paling atas, supaya menangkap exception yang tidak di handle di CLI System
-            System.out.println("Terjadi error tidak terduga. Silakan coba lagi.");
-            input.nextLine();
-            e.printStackTrace();
-        }
+        System.out.printf("Selamat Datang %s!%n", userLoggedIn.getNama());
+
+        system = loginManager.getSystem(userLoggedIn.role);
+
+        system.setInput(input);
+        system.setUserLoggedIn(userLoggedIn);
+        system.setRestoList(restoList);
+        system.setUserList(userList);
+
+        system.run();
     }
+
+    public static User getUser(String nama, String nomorTelepon) {
+
+        for (User user : userList) {
+            if (user.getNama().equals(nama.trim()) && user.getNomorTelepon().equals(nomorTelepon.trim())) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    
 
     private static void printHeader() {
         System.out.println("\n>>=======================================<<");
@@ -95,8 +99,8 @@ public class MainMenu {
         System.out.println(">>=======================================<<");
     }
 
-    private static void startMenu(){
-        System.out.println("\nSelamat datang di DepeFood!");
+    private static void startMenu() {
+        System.out.println("Selamat datang di DepeFood!");
         System.out.println("--------------------------------------------");
         System.out.println("Pilih menu:");
         System.out.println("1. Login");
@@ -108,52 +112,19 @@ public class MainMenu {
     public static void initUser() {
         userList = new ArrayList<>();
 
-        userList.add(new User("Thomas N", "9928765403", "thomas.n@gmail.com", "P", "Customer", new DebitPayment(), 500000));
-        userList.add(new User("Sekar Andita", "089877658190", "dita.sekar@gmail.com", "B", "Customer", new CreditCardPayment(), 2000000));
-        userList.add(new User("Sofita Yasusa", "084789607222", "sofita.susa@gmail.com", "T", "Customer", new DebitPayment(), 750000));
-        userList.add(new User("Dekdepe G", "080811236789", "ddp2.gampang@gmail.com", "S", "Customer", new CreditCardPayment(), 1800000));
-        userList.add(new User("Aurora Anum", "087788129043", "a.anum@gmail.com", "U", "Customer", new DebitPayment(), 650000));
+        userList.add(
+                new User("Thomas N", "9928765403", "thomas.n@gmail.com", "P", "Customer", new DebitPayment(), 500000));
+        userList.add(new User("Sekar Andita", "089877658190", "dita.sekar@gmail.com", "B", "Customer",
+                new CreditCardPayment(), 2000000));
+        userList.add(new User("Sofita Yasusa", "084789607222", "sofita.susa@gmail.com", "T", "Customer",
+                new DebitPayment(), 750000));
+        userList.add(new User("Dekdepe G", "080811236789", "ddp2.gampang@gmail.com", "S", "Customer",
+                new CreditCardPayment(), 1800000));
+        userList.add(new User("Aurora Anum", "087788129043", "a.anum@gmail.com", "U", "Customer", new DebitPayment(),
+                650000));
 
         userList.add(new User("Admin", "123456789", "admin@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
         userList.add(
                 new User("Admin Baik", "9123912308", "admin.b@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
-    }
-
-    // Helper Function untuk ambil user dari list di atas
-    public static User getUser(String nama, String nomorTelepon){
-        // Iterasi setiap user di userList untuk mencari user dengan nama dan nomor telepon yang sesuai
-        for (User user : userList) {
-            if(user.getNomorTelepon().equals(nomorTelepon) && user.getNama().equals(nama)){
-                return user;
-            }
-        }
-        // Jika tidak ditemukan user dengan nama dan nomor telepon yang sesuai, return null (user tidak ditemukan)
-        return null;
-    }
-
-    // Helper Function untuk mencari restoran berdasarkan nama
-    public static Restaurant getResto(String namaResto){
-        for (Restaurant resto : restoList) {
-            if(resto.getNama().toLowerCase().equals(namaResto.toLowerCase())){
-                return resto;
-            }
-        }
-        return null; // In case tidak ada restorannya
-    }
-
-    // Helper Function untuk validasi inputan berupa angka
-    public static boolean checkNum(String str){
-        for (int i = 0; i < str.length(); i++) {
-            char chr = str.charAt(i);
-            if (!Character.isDigit(chr)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // Helper Function untuk mengambil reference dari restoList
-    public static ArrayList<Restaurant> getRestoList(){
-        return restoList;
     }
 }

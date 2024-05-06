@@ -1,66 +1,75 @@
 package assignments.assignment3.items;
 
-import java.util.ArrayList; // XXX: Apakah parameter boleh diganti?
-
-// Class Order merepresentasikan sebuah object pesanan yang dilakukan oleh user [Diadaptasi dari TP 2]
-
 public class Order {
-    // Attributes yang dimiliki order dari sebuah user
+
     private String orderId;
-    private String tanggalPemesanan;
-    private String biayaOngkosKirim;
+    private String tanggal;
+    private int ongkir;
     private Restaurant restaurant;
-    protected Menu[] items;
-    protected boolean orderFinished;
+    private boolean orderFinished;
+    private Menu[] items;
 
-
-    public Order(String orderId, String tanggal, String ongkir, Restaurant resto, Menu[] items){
+    public Order(String orderId, String tanggal, int ongkir, Restaurant resto, Menu[] items) {
         this.orderId = orderId;
-        this.tanggalPemesanan = tanggal;
-        this.biayaOngkosKirim = ongkir;
+        this.tanggal = tanggal;
+        this.ongkir = ongkir;
         this.restaurant = resto;
+        this.orderFinished = false;
         this.items = items;
-        this.orderFinished = false; // Initial Value = Order belum diselesaikan
-    }
-    
-    // Getter
-    public String getOrderId(){
-        return orderId;
     }
 
-    public String getTanggalPemesanan(){
-        return tanggalPemesanan;
-    }
-
-    public String getBiayaOngkosKirim(){
-        return biayaOngkosKirim;
-    }
-
-    public Restaurant getRestaurant(){
+    public Restaurant getRestaurant() {
         return restaurant;
     }
 
-    public boolean getOrderStatus(){
-        return orderFinished;
+    public boolean getOrderFinished() {
+        return this.orderFinished;
     }
 
-    // Penambahan Method: Merubah Status Order
-
-    public void setOrderStatus(){
-        this.orderFinished = !this.orderFinished;
+    public void setOrderFinished(boolean orderFinished) {
+        this.orderFinished = orderFinished;
     }
 
-    public Menu[] getItems(){
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public String getTanggal() {
+        return tanggal;
+    }
+
+    public int getOngkir() {
+        return ongkir;
+    }
+
+    public Menu[] getItems() {
         return items;
     }
 
-    // Method
-    public int calculateTotal(){
-        int total = 0;
-        for (int i = 0; i < items.length; i++){
-            total += items[i].getHarga();
+    public Menu[] getSortedMenu() {
+        Menu[] menuArr = new Menu[getItems().length];
+        for (int i = 0; i < getItems().length; i++) {
+            menuArr[i] = getItems()[i];
         }
-        total += Integer.parseInt(biayaOngkosKirim);
-        return (int) total;
+        int n = menuArr.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (menuArr[j].getHarga() > menuArr[j + 1].getHarga()) {
+
+                    Menu temp = menuArr[j];
+                    menuArr[j] = menuArr[j + 1];
+                    menuArr[j + 1] = temp;
+                }
+            }
+        }
+        return menuArr;
+    }
+
+    public double getTotalHarga() {
+        double sum = 0;
+        for (Menu menu : getItems()) {
+            sum += menu.getHarga();
+        }
+        return sum += getOngkir();
     }
 }
