@@ -11,6 +11,7 @@ import assignments.assignment3.payment.DebitPayment;
 import assignments.assignment3.systemCLI.AdminSystemCLI;
 import assignments.assignment3.systemCLI.CustomerSystemCLI;
 import assignments.assignment3.systemCLI.UserSystemCLI;
+import assignments.assignment3.systemCLI.UserSystemCLI;
 
 public class MainMenu {
     private final Scanner input;
@@ -57,7 +58,8 @@ public class MainMenu {
         input.close();
     }
 
-    private void login(){
+    private void login() {
+        UserSystemCLI system;
         System.out.println("\nSilakan Login:");
         System.out.print("Nama: ");
         String nama = input.nextLine();
@@ -83,7 +85,7 @@ public class MainMenu {
         }
     }
 
-    private static void printHeader(){
+    private static void printHeader() {
         System.out.println("\n>>=======================================<<");
         System.out.println("|| ___                 ___             _ ||");
         System.out.println("||| . \\ ___  ___  ___ | __>___  ___  _| |||");
@@ -103,8 +105,8 @@ public class MainMenu {
         System.out.print("Pilihan menu: ");
     }
 
-    public static void initUser(){
-        userList = new ArrayList<User>();
+    public static void initUser() {
+        userList = new ArrayList<>();
 
         userList.add(new User("Thomas N", "9928765403", "thomas.n@gmail.com", "P", "Customer", new DebitPayment(), 500000));
         userList.add(new User("Sekar Andita", "089877658190", "dita.sekar@gmail.com", "B", "Customer", new CreditCardPayment(), 2000000));
@@ -113,7 +115,8 @@ public class MainMenu {
         userList.add(new User("Aurora Anum", "087788129043", "a.anum@gmail.com", "U", "Customer", new DebitPayment(), 650000));
 
         userList.add(new User("Admin", "123456789", "admin@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
-        userList.add(new User("Admin Baik", "9123912308", "admin.b@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
+        userList.add(
+                new User("Admin Baik", "9123912308", "admin.b@gmail.com", "-", "Admin", new CreditCardPayment(), 0));
     }
 
     // Helper Function untuk ambil user dari list di atas

@@ -10,6 +10,8 @@ public class MainMenu {
     private static ArrayList<User> userList = new ArrayList<User>();
 
     public static void main(String[] args) {
+        restoList = new ArrayList<>();
+        initUser();
         boolean programRunning = true;
 
         initUser(); // Inisialisasi user-user yang terdaftar
@@ -66,6 +68,7 @@ public class MainMenu {
                         }
                     }
                 }else{
+                    System.out.println("Selamat Datang "+userLoggedIn.getNama()+"!");
                     while (isLoggedIn){
                         menuAdmin();
                         int commandAdmin = input.nextInt();
@@ -81,7 +84,8 @@ public class MainMenu {
                 }
             }else if(command == 2){
                 programRunning = false;
-            }else{
+            }
+            else{
                 System.out.println("Perintah tidak diketahui, silakan periksa kembali.");
             }
         }

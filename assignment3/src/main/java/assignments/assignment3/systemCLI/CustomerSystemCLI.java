@@ -1,8 +1,5 @@
 package assignments.assignment3.systemCLI;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 import assignments.assignment1.OrderGenerator;
 import assignments.assignment3.items.Menu;
 import assignments.assignment3.items.Order;
@@ -11,7 +8,6 @@ import assignments.assignment3.items.User;
 import assignments.assignment3.MainMenu;
 import assignments.assignment3.payment.CreditCardPayment;
 import assignments.assignment3.payment.DebitPayment;
-import assignments.assignment3.payment.DepeFoodPaymentSystem;
 
 // Class CustomerSystemCLI: Implementasi CLI system untuk Customer
 
