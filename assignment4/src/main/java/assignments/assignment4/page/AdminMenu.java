@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import assignments.assignment3.DepeFood;
-import assignments.assignment3.Restaurant;
-import assignments.assignment3.User;
+import assignments.assignment3.items.Restaurant;
+import assignments.assignment3.items.User;
 import assignments.assignment4.MainApp;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;

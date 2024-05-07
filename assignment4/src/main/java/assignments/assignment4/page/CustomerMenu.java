@@ -9,9 +9,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import assignments.assignment3.DepeFood;
-import assignments.assignment3.Menu;
-import assignments.assignment3.Restaurant;
-import assignments.assignment3.User;
+import assignments.assignment3.items.Menu;
+import assignments.assignment3.items.Restaurant;
+import assignments.assignment3.items.User;
 import assignments.assignment4.MainApp;
 import assignments.assignment4.components.BillPrinter;
 

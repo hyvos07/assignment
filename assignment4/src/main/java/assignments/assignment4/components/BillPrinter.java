@@ -12,9 +12,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import assignments.assignment3.DepeFood;
-import assignments.assignment3.Menu;
-import assignments.assignment3.Order;
-import assignments.assignment3.User;
+import assignments.assignment3.items.Menu;
+import assignments.assignment3.items.Order;
+import assignments.assignment3.items.User;
 import assignments.assignment4.MainApp;
 
 public class BillPrinter {
