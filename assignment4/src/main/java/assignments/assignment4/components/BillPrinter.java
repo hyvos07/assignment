@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import assignments.assignment1.OrderGenerator;
 import assignments.assignment3.DepeFood;
 import assignments.assignment3.items.Menu;
 import assignments.assignment3.items.Order;
@@ -27,19 +28,17 @@ public class BillPrinter {
     }
 
     private Scene createBillPrinterForm(){
-        //TODO: Implementasi untuk menampilkan komponen hasil cetak bill
         VBox layout = new VBox(10);
 
-        return new Scene(layout, 400, 200);
+        return new Scene(layout, layout.getPrefWidth(), layout.getPrefHeight());
     }
 
-    private void printBill(String orderId) {
-        //TODO: Implementasi validasi orderID
-        if (true) {
+    public String printBill(String orderId) {
+        User user = DepeFood.getUserLoggedIn();
 
-        } else {
+        String bill = OrderGenerator.generateBill(orderId, user.getLokasi());
 
-        }
+        return bill;
     }
 
     public Scene getScene() {
