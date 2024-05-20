@@ -62,4 +62,14 @@ public class Restaurant {
         }
         return menuString.toString();
     }
+
+    // Helper Function to find menu by name
+    public Menu findMenu(String menuName) {
+        for (Menu menuItem : menu) {
+            if (menuItem.getNamaMakanan().equals(menuName)) {
+                return menuItem;
+            }
+        }
+        return null;
+    }
 }

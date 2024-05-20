@@ -20,12 +20,10 @@ import assignments.assignment4.MainApp;
 public class BillPrinter {
     private Stage stage;
     private MainApp mainApp;
-    private User user;
 
-    public BillPrinter(Stage stage, MainApp mainApp, User user) {
+    public BillPrinter(Stage stage, MainApp mainApp) {
         this.stage = stage;
         this.mainApp = mainApp;
-        this.user = user;
     }
 
     private Scene createBillPrinterForm(){
@@ -46,32 +44,5 @@ public class BillPrinter {
 
     public Scene getScene() {
         return this.createBillPrinterForm();
-    }
-
-    // Class ini opsional
-    public class MenuItem {
-        private final StringProperty itemName;
-        private final StringProperty price;
-
-        public MenuItem(String itemName, String price) {
-            this.itemName = new SimpleStringProperty(itemName);
-            this.price = new SimpleStringProperty(price);
-        }
-
-        public StringProperty itemNameProperty() {
-            return itemName;
-        }
-
-        public StringProperty priceProperty() {
-            return price;
-        }
-
-        public String getItemName() {
-            return itemName.get();
-        }
-
-        public String getPrice() {
-            return price.get();
-        }
     }
 }
