@@ -81,8 +81,10 @@ public class DepeFood {
             restaurant = new Restaurant(namaRestaurant);
         }
         restoList.add(restaurant);
-        System.out.print("Restaurant " + restaurant.getNama() + " Berhasil terdaftar.");
-        System.out.print(restoList.get(0).getNama());
+
+        // Logger
+        System.out.println("Restaurant " + restaurant.getNama() + " Berhasil terdaftar.");
+        System.out.println(restoList.get(0).getNama());
     }
 
     public static String getValidRestaurantName(String inputName) {
@@ -90,11 +92,11 @@ public class DepeFood {
         boolean isRestaurantNameValid = false;
     
         while (!isRestaurantNameValid) {
-            System.out.print("Nama: ");
+            // System.out.print("Nama: ");
             boolean isRestaurantExist = restoList.stream()
                     .anyMatch(restoran -> restoran.getNama().toLowerCase().equals(inputName.toLowerCase()));
-            boolean isRestaurantNameLengthValid = inputName.length() >= 4;
-    
+            boolean isRestaurantNameLengthValid = inputName.trim().replace(" ", "").length() >= 4;
+
             if (isRestaurantExist) {
                 return String.format("Restoran dengan nama %s sudah pernah terdaftar. Mohon masukkan nama yang berbeda!", inputName);
             } else if (!isRestaurantNameLengthValid) {
@@ -263,7 +265,24 @@ public class DepeFood {
         order.setOrderFinished(true);
     }
     
-    public static void setPenggunaLoggedIn(User user){
+    public static void setUserLoggedIn(User user){
         userLoggedIn = user;
+    }
+
+    // Helper Function to Calculate Ongkir
+    public static int calculateOngkir(String lokasi) {
+        if (lokasi.equals("P")) {
+            return 10000;
+        } else if (lokasi.equals("B")) {
+            return 20000;
+        } else if (lokasi.equals("T")) {
+            return 35000;
+        } else if (lokasi.equals("S")) {
+            return 40000;
+        } else if (lokasi.equals("U")) {
+            return 60000;
+        } else {
+            return 0;
+        }
     }
 }

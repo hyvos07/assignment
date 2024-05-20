@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import assignments.assignment1.OrderGenerator;
 import assignments.assignment3.DepeFood;
 import assignments.assignment3.items.Menu;
 import assignments.assignment3.items.Order;
@@ -20,58 +21,27 @@ import assignments.assignment4.MainApp;
 public class BillPrinter {
     private Stage stage;
     private MainApp mainApp;
-    private User user;
 
-    public BillPrinter(Stage stage, MainApp mainApp, User user) {
+    public BillPrinter(Stage stage, MainApp mainApp) {
         this.stage = stage;
         this.mainApp = mainApp;
-        this.user = user;
     }
 
     private Scene createBillPrinterForm(){
-        //TODO: Implementasi untuk menampilkan komponen hasil cetak bill
         VBox layout = new VBox(10);
 
-        return new Scene(layout, 400, 200);
+        return new Scene(layout, layout.getPrefWidth(), layout.getPrefHeight());
     }
 
-    private void printBill(String orderId) {
-        //TODO: Implementasi validasi orderID
-        if (true) {
+    public String printBill(String orderId) {
+        User user = DepeFood.getUserLoggedIn();
 
-        } else {
+        String bill = OrderGenerator.generateBill(orderId, user.getLokasi());
 
-        }
+        return bill;
     }
 
     public Scene getScene() {
         return this.createBillPrinterForm();
-    }
-
-    // Class ini opsional
-    public class MenuItem {
-        private final StringProperty itemName;
-        private final StringProperty price;
-
-        public MenuItem(String itemName, String price) {
-            this.itemName = new SimpleStringProperty(itemName);
-            this.price = new SimpleStringProperty(price);
-        }
-
-        public StringProperty itemNameProperty() {
-            return itemName;
-        }
-
-        public StringProperty priceProperty() {
-            return price;
-        }
-
-        public String getItemName() {
-            return itemName.get();
-        }
-
-        public String getPrice() {
-            return price.get();
-        }
     }
 }
