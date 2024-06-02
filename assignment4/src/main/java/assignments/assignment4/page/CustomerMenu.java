@@ -290,12 +290,6 @@ public class CustomerMenu extends MemberMenu{
                         .collect(Collectors.toList())
                 );
             } else {
-                mainApp.createAlert(
-                    AlertType.ERROR,
-                    "Error",
-                    "Restaurant Not Found",
-                    "Restaurant not found. Please select another restaurant."
-                ).showAndWait();
                 return;
             }
 
@@ -312,6 +306,7 @@ public class CustomerMenu extends MemberMenu{
         // ====== Date Picker ======
         DatePicker datePicker = new DatePicker();
         super.setPrefSize(datePicker, 269.0, 35.0);
+        
         // Set the date picker to DD/MM/YYYY format
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
@@ -361,7 +356,7 @@ public class CustomerMenu extends MemberMenu{
 
         orderButton.setOnAction(e -> {
             String selectedResto = chooseComboBox.getValue();
-            String selectedDate = datePicker.getValue().toString();
+            String selectedDate = datePicker.getValue().format(formatter);
 
             if(selectedResto == null || selectedDate == null || orderMenu.size() == 0){
                 mainApp.createAlert(
@@ -374,6 +369,12 @@ public class CustomerMenu extends MemberMenu{
             }
 
             handleBuatPesanan(selectedResto, selectedDate, orderMenu);
+
+            orderMenu.clear(); // Clear the orderMenu list
+
+            chooseComboBox.getSelectionModel().clearSelection();
+            datePicker.getEditor().clear();
+            menuListView.getItems().clear();
         });
 
         // Adding all elements to menuLayout
@@ -404,6 +405,8 @@ public class CustomerMenu extends MemberMenu{
         layout.getChildren().add(createNavbar("Print Bill"));
 
         VBox menuLayout = new VBox(10);
+        menuLayout.setAlignment(Pos.CENTER);
+        menuLayout.setPadding(new Insets(42, 42, 42, 42));
 
         // ====== Choose Order Title ======
         Label orderLabel = new Label("Choose Order");
@@ -480,6 +483,8 @@ public class CustomerMenu extends MemberMenu{
         layout.getChildren().add(createNavbar("Pay Order"));
 
         VBox menuLayout = new VBox(10);
+        menuLayout.setAlignment(Pos.CENTER);
+        menuLayout.setPadding(new Insets(42, 42, 42, 42));
 
         // ====== Choose Order Title ======
         Label orderLabel = new Label("Choose Order");
