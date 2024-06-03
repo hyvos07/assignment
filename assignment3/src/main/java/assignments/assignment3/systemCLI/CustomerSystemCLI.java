@@ -167,7 +167,7 @@ public class CustomerSystemCLI extends UserSystemCLI {
                 continue;
             }
 
-            long amountToPay = 0;
+            double amountToPay = 0;
 
             try {
                 amountToPay = paymentSystem.processPayment(userLoggedIn.getSaldo(), (long) order.getTotalHarga());
@@ -177,7 +177,7 @@ public class CustomerSystemCLI extends UserSystemCLI {
                 continue;
             }
 
-            long saldoLeft = userLoggedIn.getSaldo() - amountToPay;
+            double saldoLeft = userLoggedIn.getSaldo() - amountToPay;
 
             userLoggedIn.setSaldo(saldoLeft);
             handleUpdateStatusPesanan(order);

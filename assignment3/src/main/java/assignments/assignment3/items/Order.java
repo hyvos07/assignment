@@ -70,6 +70,6 @@ public class Order {
         for (Menu menu : getItems()) {
             sum += menu.getHarga();
         }
-        return sum += getOngkir();
+        return sum + getOngkir();
     }
 }

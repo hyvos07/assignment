@@ -10,6 +10,7 @@ import assignments.assignment3.items.Restaurant;
 import assignments.assignment4.MainApp;
 import assignments.assignment4.components.form.LoginForm;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -38,16 +39,14 @@ public class AdminMenu extends MemberMenu{
     private Scene viewRestaurantsScene;
     private List<Restaurant> restoList = super.restoList;
     private MainApp mainApp; // Reference to MainApp instance
-    private ComboBox<String> restaurantComboBox = super.restaurantComboBox; // Refer to the restaurantComboBox in MemberMenu
+    private ObservableList<String> restaurantObvList = super.restaurantObvList; // Refer to the restaurantComboBox in MemberMenu
     private ListView<String> menuItemsListView = new ListView<>();
 
     public AdminMenu(Stage stage, MainApp mainApp) {
         this.stage = stage;
         this.mainApp = mainApp;
-        this.scene = createBaseMenu();
-        this.addRestaurantScene = createAddRestaurantForm();
-        this.addMenuScene = createAddMenuForm();
-        this.viewRestaurantsScene = createViewRestaurantsForm();
+        
+        super.refresh(); // Initiation of the page
     }
 
     @Override
@@ -57,8 +56,6 @@ public class AdminMenu extends MemberMenu{
 
     @Override
     public Scene createBaseMenu() {
-        super.refresh(); // Refresh the restaurant list
-
         // ===== Parent =====
         VBox menuRoot = new VBox();
         super.setPrefSize(menuRoot, 438.0, 515.0);
@@ -101,8 +98,12 @@ public class AdminMenu extends MemberMenu{
         navbarContentRight.setLeft(pageInfo);
         navbarContentRight.setRight(logoutButton);
         
+        // Image and ImageView Assets
+        Image logoIcon = new Image(getClass().getResourceAsStream("/Logo.png"));
+        ImageView logoView = new ImageView(logoIcon);
+
         // Adding all Content to NavBar
-        navbarContent.setLeft(super.logoView);
+        navbarContent.setLeft(logoView);
         navbarContent.setRight(navbarContentRight);
 
         // Adding Navbar Content to Navbar
@@ -180,6 +181,15 @@ public class AdminMenu extends MemberMenu{
         viewRestaurantsButton.setTextFill(javafx.scene.paint.Color.WHITE);
         
         viewRestaurantsButton.setOnAction(e -> {
+            if(restoList.isEmpty()){
+                mainApp.createAlert(
+                    Alert.AlertType.ERROR,
+                    "Error", 
+                    "Empty Database",
+                    "No restaurant has been added yet! Please add a restaurant first."
+                ).showAndWait();
+                return;
+            }
             mainApp.setScene(viewRestaurantsScene);
         });
 
@@ -195,11 +205,9 @@ public class AdminMenu extends MemberMenu{
     }
 
     private Scene createAddRestaurantForm() {
-        super.refresh(); // Refresh the restaurant list
-
         VBox layout = new VBox();
 
-        layout.getChildren().add(createNavbar("Add Restaurant"));
+        layout.getChildren().add(createNavbar("Add Restaurant", 438.4, 353.6));
 
         // Form
         VBox form = new VBox(30);
@@ -265,11 +273,9 @@ public class AdminMenu extends MemberMenu{
     }
 
     private Scene createAddMenuForm() {
-        super.refresh(); // Refresh the restaurant list
-
         VBox layout = new VBox();
 
-        layout.getChildren().add(createNavbar("Add Restaurant's Menu"));
+        layout.getChildren().add(createNavbar("Add Restaurant's Menu", 438.4, 353.6));
 
         VBox fillForm = new VBox(15);
         fillForm.setAlignment(Pos.CENTER);
@@ -284,7 +290,7 @@ public class AdminMenu extends MemberMenu{
 
         // ===== Restaurant ComboBox =====
         ComboBox<String> addMenuComboBox = new ComboBox<String>();
-        addMenuComboBox.itemsProperty().bind(restaurantComboBox.itemsProperty());
+        addMenuComboBox.setItems(restaurantObvList);
 
         addMenuComboBox.setPromptText("Choose Restaurant Name");
         super.setPrefSize(addMenuComboBox, 269.0, 35.0);
@@ -388,7 +394,7 @@ public class AdminMenu extends MemberMenu{
     private Scene createViewRestaurantsForm() {
         VBox layout = new VBox();
 
-        layout.getChildren().add(createNavbar("View Restaurants"));
+        layout.getChildren().add(createNavbar("View Restaurants", 438.4, 353.6));
 
         VBox content = new VBox(10);
         content.setAlignment(Pos.CENTER);
@@ -403,7 +409,7 @@ public class AdminMenu extends MemberMenu{
 
         // ===== Restaurant ComboBox =====
         ComboBox<String> viewMenuComboBox = new ComboBox<String>();
-        viewMenuComboBox.itemsProperty().bind(restaurantComboBox.itemsProperty());
+        viewMenuComboBox.setItems(restaurantObvList);
 
         viewMenuComboBox.setPromptText("Choose Restaurant Name");
         super.setPrefSize(viewMenuComboBox, 269.0, 35.0);
@@ -542,9 +548,9 @@ public class AdminMenu extends MemberMenu{
 
     // Helper Function to create Navbar for AdminMenu feature
     @Override
-    public HBox createNavbar(String title) {
+    public HBox createNavbar(String title, double widthMain, double widthContent) {
         HBox navbar = new HBox();
-        super.setPrefSize(navbar, 438.4, 71.2);
+        super.setPrefSize(navbar, widthMain, 71.2);
 
         navbar.setStyle("-fx-background-color: #2A2A2A;");
         navbar.setAlignment(Pos.CENTER);
@@ -552,12 +558,13 @@ public class AdminMenu extends MemberMenu{
         
         // Inside NavBar
         BorderPane navbarContent = new BorderPane();
-        super.setPrefSize(navbarContent, 353.6, 39.2);
+        super.setPrefSize(navbarContent, widthContent, 39.2);
 
         // Page Info
         Label pageInfo = new Label(title);
         pageInfo.setStyle("-fx-text-fill: #FFFFFF;");
         pageInfo.setFont(new Font("Poppins Bold", 12.0));
+        pageInfo.setPadding(new Insets(0, 5, 0, 0));
         BorderPane.setAlignment(pageInfo, Pos.CENTER);
 
         // Logout Button
@@ -577,5 +584,13 @@ public class AdminMenu extends MemberMenu{
         navbar.getChildren().add(navbarContent);
 
         return navbar;
+    }
+
+    @Override
+    protected void refreshPage() {
+        this.scene = createBaseMenu();
+        this.addRestaurantScene = createAddRestaurantForm();
+        this.addMenuScene = createAddMenuForm();
+        this.viewRestaurantsScene = createViewRestaurantsForm();
     }
 }

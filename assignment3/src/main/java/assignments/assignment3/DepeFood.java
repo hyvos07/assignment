@@ -84,7 +84,7 @@ public class DepeFood {
 
         // Logger
         System.out.println("Restaurant " + restaurant.getNama() + " Berhasil terdaftar.");
-        System.out.println(restoList.get(0).getNama());
+        System.out.println(restoList.get(restoList.size()-1).getNama());
     }
 
     public static String getValidRestaurantName(String inputName) {
@@ -196,17 +196,17 @@ public class DepeFood {
                 continue;
             }
 
-            long amountToPay = 0;
+            double amountToPay = 0;
 
             try {
-                amountToPay = paymentSystem.processPayment(userLoggedIn.getSaldo(), (long) order.getTotalHarga());
+                amountToPay = paymentSystem.processPayment(userLoggedIn.getSaldo(), order.getTotalHarga());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 System.out.println();
                 continue;
             }
 
-            long saldoLeft = userLoggedIn.getSaldo() - amountToPay;
+            double saldoLeft = userLoggedIn.getSaldo() - amountToPay;
 
             userLoggedIn.setSaldo(saldoLeft);
             handleUpdateStatusPesanan(order);

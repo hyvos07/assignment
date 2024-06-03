@@ -14,7 +14,7 @@ public class User {
     private String lokasi;
 
     private DepeFoodPaymentSystem paymentSystem;
-    private long saldo;
+    private double saldo;
     private ArrayList<Order> orderHistory;
 
     public User(String nama, String nomorTelepon, String email, String lokasi, String role,
@@ -45,7 +45,7 @@ public class User {
         return nomorTelepon;
     }
 
-    public long getSaldo() {
+    public double getSaldo() {
         return saldo;
     }
 
@@ -74,7 +74,7 @@ public class User {
         return false;
     }
 
-    public void setSaldo(long saldo) {
+    public void setSaldo(double saldo) {
         this.saldo = saldo;
     }
 

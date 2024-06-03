@@ -4,6 +4,8 @@ import java.util.List;
 
 import assignments.assignment3.DepeFood;
 import assignments.assignment3.items.Restaurant;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
@@ -16,12 +18,8 @@ import javafx.scene.layout.StackPane;
 
 public abstract class MemberMenu {
     private Scene scene;
-    protected ComboBox<String> restaurantComboBox = new ComboBox<>();
+    protected ObservableList<String> restaurantObvList = FXCollections.observableArrayList();
     protected List<Restaurant> restoList = DepeFood.getRestoList();
-
-    // Image and ImageView Assets
-    protected Image logoIcon = new Image(getClass().getResourceAsStream("/Logo.png"));
-    protected ImageView logoView = new ImageView(logoIcon);
     
     protected Image logoutIcon = new Image(getClass().getResourceAsStream("/Logout.png"));
     protected ImageView logoutView = new ImageView(logoutIcon);
@@ -30,7 +28,8 @@ public abstract class MemberMenu {
 
     // Abstract Method to be implemented
     abstract protected Scene createBaseMenu();
-    abstract protected HBox createNavbar(String title);
+    abstract protected HBox createNavbar(String title, double widthMain, double widthContent);
+    abstract protected void refreshPage();
 
     public Scene getScene(){
         return this.scene;
@@ -39,10 +38,12 @@ public abstract class MemberMenu {
     // Helper Function to refresh the App
     protected void refresh(){
         this.restoList = DepeFood.getRestoList(); // Refresh the restaurant list
-        this.restaurantComboBox.getItems().clear(); // Clear the restaurantComboBox
+        this.restaurantObvList.clear(); // Clear the restaurantComboBox
         
-        // Add the restaurant name to the restaurantComboBox
-        this.restoList.forEach(restaurant -> this.restaurantComboBox.getItems().add(restaurant.getNama()));
+        // Add the restaurant name to the restaurantObvList
+        this.restoList.forEach(restaurant -> this.restaurantObvList.add(restaurant.getNama()));
+
+        refreshPage(); // Refresh all of the page
     }
 
     // Helper Function to create blank spacer

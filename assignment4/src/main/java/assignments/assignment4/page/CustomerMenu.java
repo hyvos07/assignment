@@ -48,7 +48,7 @@ public class CustomerMenu extends MemberMenu{
     private Scene cekSaldoScene;
     private BillPrinter billPrinter; // Instance of BillPrinter
     private MainApp mainApp;
-    private ComboBox<String> restaurantComboBox = super.restaurantComboBox; // Refer to the restaurantComboBox in MemberMenu
+    private ObservableList<String> restaurantObvList = super.restaurantObvList; // Refer to the restaurantComboBox in MemberMenu
     private List<Restaurant> restoList = super.restoList; // Refer to the restoList in MemberMenu
     
     private List<String> orderMenu = new ArrayList<>(); // List of selected menu to be ordered
@@ -59,12 +59,8 @@ public class CustomerMenu extends MemberMenu{
     public CustomerMenu(Stage stage, MainApp mainApp) {
         this.stage = stage;
         this.mainApp = mainApp;
-        this.scene = createBaseMenu();
-        this.addOrderScene = createTambahPesananForm();
-        this.billPrinter = new BillPrinter(stage, mainApp); // Pass user to BillPrinter constructor
-        this.printBillScene = createBillPrinter();
-        this.payBillScene = createBayarBillForm();
-        this.cekSaldoScene = createCekSaldoScene();
+        
+        super.refresh(); // Refresh the page
     }
 
     @Override
@@ -73,9 +69,7 @@ public class CustomerMenu extends MemberMenu{
     }
 
     @Override
-    public Scene createBaseMenu() {
-        super.refresh();
-        
+    public Scene createBaseMenu() {        
         // ===== Parent =====
         VBox menuRoot = new VBox();
         
@@ -117,8 +111,12 @@ public class CustomerMenu extends MemberMenu{
         navbarContentRight.setLeft(pageInfo);
         navbarContentRight.setRight(logoutButton);
         
+        // Image and ImageView Assets
+        Image logoIcon = new Image(getClass().getResourceAsStream("/Logo.png"));
+        ImageView logoView = new ImageView(logoIcon);
+
         // Adding all Content to NavBar
-        navbarContent.setLeft(super.logoView);
+        navbarContent.setLeft(logoView);
         navbarContent.setRight(navbarContentRight);
 
         // Adding Navbar Content to Navbar
@@ -228,28 +226,14 @@ public class CustomerMenu extends MemberMenu{
 
     private Scene createTambahPesananForm() {
         User user = DepeFood.getUserLoggedIn(); // Get the logged in user
-        ListView<String> menuListView = new ListView<>();
-
-        menuListView.setCellFactory(CheckBoxListCell.forListView(new Callback<String, ObservableValue<Boolean>>() {
-            @Override
-            public ObservableValue<Boolean> call(String item) {
-                BooleanProperty observable = new SimpleBooleanProperty();
-                observable.addListener((obs, wasSelected, isNowSelected) -> {
-                    if(isNowSelected){
-                        orderMenu.add(item);
-                    } else {
-                        orderMenu.remove(item);
-                    }
-                });
-                return observable;
-            }
-        }));
+        ListView<String> menuListView = new ListView<>(); // ListView for the menu
+        ListView<String> orderListView = new ListView<>(); // ListView for the user's order
 
         // ===== Parent =====
         VBox layout = new VBox();
         layout.setAlignment(Pos.CENTER);
 
-        layout.getChildren().add(createNavbar("Create Order"));
+        layout.getChildren().add(createNavbar("Create Order", 700, 616));
 
         // ====== Menu Layout ======
         VBox menuLayout = new VBox(10);
@@ -265,7 +249,7 @@ public class CustomerMenu extends MemberMenu{
 
         // ====== Restaurant ComboBox ======
         ComboBox<String> chooseComboBox = new ComboBox<String>();
-        chooseComboBox.itemsProperty().bind(restaurantComboBox.itemsProperty());
+        chooseComboBox.setItems(restaurantObvList);
 
         chooseComboBox.setPromptText("Choose Restaurant Name");
         super.setPrefSize(chooseComboBox, 269.0, 35.0);
@@ -286,16 +270,11 @@ public class CustomerMenu extends MemberMenu{
                 menuListView.getItems().clear();
                 menuListView.getItems().addAll(
                     resto.getMenu().stream()
-                        .map(menu -> menu.getNamaMakanan() + " - Rp " + menu.getHarga())
+                        .map(menu -> menu.getNamaMakanan() + " - Rp" + menu.getHarga())
                         .collect(Collectors.toList())
                 );
             } else {
-                mainApp.createAlert(
-                    AlertType.ERROR,
-                    "Error",
-                    "Restaurant Not Found",
-                    "Restaurant not found. Please select another restaurant."
-                ).showAndWait();
+                // Indicate that the restaurant is not found
                 return;
             }
 
@@ -312,6 +291,7 @@ public class CustomerMenu extends MemberMenu{
         // ====== Date Picker ======
         DatePicker datePicker = new DatePicker();
         super.setPrefSize(datePicker, 269.0, 35.0);
+        
         // Set the date picker to DD/MM/YYYY format
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
@@ -335,12 +315,16 @@ public class CustomerMenu extends MemberMenu{
         };
         datePicker.setConverter(converter);
         
-        // ===== Order Choose List =====
+        // ====== Order Section ======
+        HBox orderSection = new HBox(10);
+        orderSection.setAlignment(Pos.CENTER);
+
+        // ===== Menu Choose List =====
         VBox menuList = new VBox(10);
         menuList.setAlignment(Pos.CENTER);
         menuList.setPadding(new Insets(10, 10, 10, 10));
         
-        // ====== Title Order Label ======
+        // ====== Title Menu Label ======
         Label menuLabel = new Label("Choose Menu");
         menuLabel.setFont(new Font("Poppins Bold", 13.0));
         menuLabel.setStyle("-fx-text-fill: #2A2A2A;");
@@ -351,7 +335,75 @@ public class CustomerMenu extends MemberMenu{
         menuListView.setPrefWidth(272.0);
         menuListView.setPrefHeight(300.0);
         menuListView.setStyle("-fx-background-color: #e3e3e3; -fx-background-radius: 15px;");
-        menuListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // Allow multiple selection
+
+        menuListView.setCellFactory(fact -> {
+            ListCell<String> cell = new ListCell<>();
+        
+            cell.setOnMouseClicked(event -> {
+                if (!cell.isEmpty()) {
+                    // Get the selected item
+                    String selectedItem = cell.getItem();
+        
+                    // Add the selected item to the orderListView
+                    if (selectedItem != null) {
+                        orderListView.getItems().add(selectedItem);
+                    }
+                }
+            });
+        
+            cell.itemProperty().addListener((obs, oldItem, newItem) -> {
+                if (newItem != null) {
+                    cell.setText(newItem);
+                } else {
+                    cell.setText(null);
+                }
+            });
+        
+            return cell;
+        });
+
+        // ====== User's Order List ======
+        VBox orderList = new VBox(10);
+        orderList.setAlignment(Pos.CENTER);
+        orderList.setPadding(new Insets(10, 10, 10, 10));
+
+        // ====== Title Order Label ======
+        Label orderLabel = new Label("Your Order");
+        orderLabel.setFont(new Font("Poppins Bold", 13.0));
+        orderLabel.setStyle("-fx-text-fill: #2A2A2A;");
+        orderLabel.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        orderLabel.setAlignment(Pos.CENTER);
+
+        // ====== Order List ======
+        orderListView.setPrefWidth(272.0);
+        orderListView.setPrefHeight(300.0);
+        orderListView.setStyle("-fx-background-color: #e3e3e3; -fx-background-radius: 15px;");
+
+        orderListView.setCellFactory(fact -> {
+            ListCell<String> cell = new ListCell<>();
+        
+            cell.setOnMouseClicked(event -> {
+                if (!cell.isEmpty()) {
+                    // Get the item in the cell
+                    String item = cell.getItem();
+        
+                    // Remove the item from the orderListView
+                    if (item != null) {
+                        orderListView.getItems().remove(item);
+                    }
+                }
+            });
+        
+            cell.itemProperty().addListener((obs, oldItem, newItem) -> {
+                if (newItem != null) {
+                    cell.setText(newItem);
+                } else {
+                    cell.setText(null);
+                }
+            });
+        
+            return cell;
+        });
 
         // ====== Order Button ======
         Button orderButton = new Button("Make Order");
@@ -361,7 +413,18 @@ public class CustomerMenu extends MemberMenu{
 
         orderButton.setOnAction(e -> {
             String selectedResto = chooseComboBox.getValue();
-            String selectedDate = datePicker.getValue().toString();
+            String selectedDate = null;
+
+            try {
+                selectedDate = datePicker.getValue().format(formatter);
+            } catch (Exception e1) {
+                selectedDate = null;
+            }
+
+            for (String item : orderListView.getItems()) {
+                System.out.println(item);
+                orderMenu.add(item);
+            }
 
             if(selectedResto == null || selectedDate == null || orderMenu.size() == 0){
                 mainApp.createAlert(
@@ -374,7 +437,28 @@ public class CustomerMenu extends MemberMenu{
             }
 
             handleBuatPesanan(selectedResto, selectedDate, orderMenu);
+
+            // Clear all the fields
+            orderMenu.clear();
+            chooseComboBox.getSelectionModel().clearSelection();
+            datePicker.getEditor().clear();
+            menuListView.getItems().clear();
+            orderListView.getItems().clear();
         });
+
+        // Adding all elements to menuList
+        menuList.getChildren().addAll(
+            menuLabel,
+            menuListView
+        );
+
+        // Adding all elements to orderList
+        orderList.getChildren().addAll(
+            orderLabel,
+            orderListView
+        );
+
+        orderSection.getChildren().addAll(menuList, orderList); // Add menuList and orderList to orderSection
 
         // Adding all elements to menuLayout
         menuLayout.getChildren().addAll(
@@ -384,8 +468,7 @@ public class CustomerMenu extends MemberMenu{
             dateLabel,
             datePicker,
             super.createSpacer(10),
-            menuLabel,
-            menuListView,
+            orderSection,
             super.createSpacer(10),
             orderButton
         );
@@ -401,9 +484,11 @@ public class CustomerMenu extends MemberMenu{
         VBox layout = new VBox();
         layout.setAlignment(Pos.CENTER);
 
-        layout.getChildren().add(createNavbar("Print Bill"));
+        layout.getChildren().add(createNavbar("Print Bill", 438.4, 353.6));
 
         VBox menuLayout = new VBox(10);
+        menuLayout.setAlignment(Pos.CENTER);
+        menuLayout.setPadding(new Insets(42, 42, 42, 42));
 
         // ====== Choose Order Title ======
         Label orderLabel = new Label("Choose Order");
@@ -449,14 +534,7 @@ public class CustomerMenu extends MemberMenu{
                 return;
             }
 
-            String bill = billPrinter.printBill(selectedOrder);
-
-            mainApp.createAlert(
-                AlertType.INFORMATION,
-                "Bill",
-                "Bill for Order " + selectedOrder,
-                bill
-            ).showAndWait();
+            mainApp.setScene(billPrinter.getScene(selectedOrder));
         });
 
         menuLayout.getChildren().addAll(
@@ -477,9 +555,11 @@ public class CustomerMenu extends MemberMenu{
         VBox layout = new VBox();
         layout.setAlignment(Pos.CENTER);
 
-        layout.getChildren().add(createNavbar("Pay Order"));
+        layout.getChildren().add(createNavbar("Pay Order", 438.4, 353.6));
 
         VBox menuLayout = new VBox(10);
+        menuLayout.setAlignment(Pos.CENTER);
+        menuLayout.setPadding(new Insets(42, 42, 42, 42));
 
         // ====== Choose Order Title ======
         Label orderLabel = new Label("Choose Order");
@@ -575,7 +655,7 @@ public class CustomerMenu extends MemberMenu{
         VBox layout = new VBox();
         layout.setAlignment(Pos.CENTER);
 
-        layout.getChildren().add(createNavbar("Check User Info"));
+        layout.getChildren().add(createNavbar("Check User Info", 438.4, 353.6));
 
         VBox menuLayout = new VBox(10);
         menuLayout.setAlignment(Pos.CENTER);
@@ -633,7 +713,16 @@ public class CustomerMenu extends MemberMenu{
         int counter = 0;
 
         for (String menuItem : menuItems) {
-            String namaMenu = menuItem.split(" ")[0];
+            String namaMenu = "";
+
+            for (int i = 0; i < menuItem.length(); i++) {
+                if (menuItem.charAt(i) == '-') {
+                    // Get the menu name until the '-' character
+                    namaMenu = menuItem.substring(0, i - 1);
+                    break;
+                }
+            }
+
             Menu selectedMenu = selectedResto.findMenu(namaMenu);
             
             selectedMenus[counter++] = selectedMenu;
@@ -687,10 +776,12 @@ public class CustomerMenu extends MemberMenu{
                 return;
             }
 
-            long orderFee;
+            double orderFee;
             try {
-                orderFee = (long) userPayment.processPayment(user.getSaldo(), (long) order.getTotalHarga());
+                orderFee = userPayment.processPayment(user.getSaldo(), order.getTotalHarga());
             } catch (Exception e) {
+                System.out.println(e.getMessage());
+
                 mainApp.createAlert(
                     AlertType.ERROR,
                     "Error",
@@ -705,7 +796,7 @@ public class CustomerMenu extends MemberMenu{
                     AlertType.ERROR,
                     "Error",
                     "Payment Failed",
-                    "Insufficient balance. Blud doesn't even have enough money to pay" + orderFee + " to eat lmao."
+                    "Insufficient balance. Blud doesn't even have enough money to pay " + orderFee + " to eat lmao."
                 ).showAndWait();
                 return;
             }
@@ -767,9 +858,9 @@ public class CustomerMenu extends MemberMenu{
 
     // Helper Function to create Navbar for CustomerPage feature
     @Override
-    public HBox createNavbar(String title) {
+    public HBox createNavbar(String title, double widthMain, double widthContent) {
         HBox navbar = new HBox();
-        super.setPrefSize(navbar, 438.4, 71.2);
+        super.setPrefSize(navbar, widthMain, 71.2);
 
         navbar.setStyle("-fx-background-color: #2A2A2A;");
         navbar.setAlignment(Pos.CENTER);
@@ -777,12 +868,13 @@ public class CustomerMenu extends MemberMenu{
         
         // Inside NavBar
         BorderPane navbarContent = new BorderPane();
-        super.setPrefSize(navbarContent, 353.6, 39.2);
+        super.setPrefSize(navbarContent, widthContent, 39.2);
 
         // Page Info
         Label pageInfo = new Label(title);
         pageInfo.setStyle("-fx-text-fill: #FFFFFF;");
         pageInfo.setFont(new Font("Poppins Bold", 12.0));
+        pageInfo.setPadding(new Insets(0, 5, 0, 0));
         BorderPane.setAlignment(pageInfo, Pos.CENTER);
 
         // Logout Button
@@ -802,5 +894,15 @@ public class CustomerMenu extends MemberMenu{
         navbar.getChildren().add(navbarContent);
 
         return navbar;
+    }
+
+    @Override
+    protected void refreshPage() {
+        this.scene = createBaseMenu();
+        this.addOrderScene = createTambahPesananForm();
+        this.billPrinter = new BillPrinter(stage, mainApp); // Pass user to BillPrinter constructor
+        this.printBillScene = createBillPrinter();
+        this.payBillScene = createBayarBillForm();
+        this.cekSaldoScene = createCekSaldoScene();
     }
 }
