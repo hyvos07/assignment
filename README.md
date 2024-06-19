@@ -3,6 +3,16 @@
 CSGE601021 Dasar-Dasar Pemrograman 2 @ Fakultas Ilmu Komputer Universitas Indonesia,
 Semester Genap 2023/2024
 
+Halo. Ini adalah repository arsip dari TP DDP2 di semester genap 2023/2024. Ada beberapa branch yang tersedia di repository ini.
+
+<ul>
+    <li> <b> main [Current Branch]</b> <br> Ini branch yang dikumpul ala kadarnya waktu deadline. TP 4 nya jelek, tapi selain itu semuanya lengkap disini.
+    <li> <b> old </b> <br> Ini branch yang cuma ada TP 1 - TP 3, TP 4 nya kosong. Isinya TP yang dibuat sendiri, karena di branch lainnya itu isinya solusi asdos semua, cuma TP 4 yang perlu dikerjain. Jadi, kerjaan TP 1 - TP 3 adanya di branch ini.
+    <li> <b> tp4 </b> <br> Ini branch yang punya TP 4 versi bagus. Well, sebenernya males ngecekin udah bagus apa nggak nya, tapi masih lebih mending lah daripada di main branch.
+</ul>
+
+Di bawah ini template README.md dari [repo upstream](https://github.com/dekdepe/assignments-23-24) DDP2 semester 2023/2024. Ga dibaca juga gapapa sih...
+
 ## Friendly Notes
 
 * Kalau kamu bingung, jangan sungkan untuk bertanya pada asdosmu ya ✌
